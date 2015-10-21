@@ -31,9 +31,10 @@ Raspberry Pi
 ## Software
 Liste selbstentwickelter Module mit kurzer Beschreibung
 
+<!---
 ##### *sw_comms.h*
 stellt eine einfache Kommunikationsschnittstelle für das Senden und Empfangen von Sensordaten bzw. Aktorbefehlen zur Verfügung
-
+-->
 
 ---
 
