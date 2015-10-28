@@ -38,3 +38,34 @@ modprobe
 ---
 
 ##RIOT setting up wpan interface
+
+`cd` to folder `../RIOT/examples/gnrc_networking`  
+set necessary environment variables `$PATH`and `$BOARD`  
+`make && make flash && make term`
+
+```bash
+export PATH=/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/bin/:$PATH
+export BOARD=samr21-xpro
+sudo make
+sudo make flash
+sudo make term
+```
+
+in terminal on board
+
+command | description
+---|---
+ifconfig | print current settings, look for Iface # (=\<if_id>), default is 7
+ifconfig \<if_id> set \<key> \<value> | see ifconfig -h
+ifconfig 7 set pan_id 0xbeef | set pan_id to 0xbeef
+ifconfig 7 set addr \<value> | set ip (**own, or receiver??**)
+ifconfig 7 set channel 17 | set channel to 17
+
+
+
+
+
+
+
+
+
