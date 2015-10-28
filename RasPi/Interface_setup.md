@@ -44,7 +44,7 @@ set necessary environment variables `$PATH`and `$BOARD`
 `make && make flash && make term`
 
 ```bash
-export PATH=/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/bin/:$PATH
+export PATH=../../gcc-arm-none-eabi-4_9-2015q3/bin/:$PATH
 export BOARD=samr21-xpro
 sudo make
 sudo make flash
