@@ -63,7 +63,6 @@ command | description
 ifconfig | print current settings, look for Iface # (=\<if_id>), default is 7
 ifconfig \<if_id> set \<key> \<value> | see ifconfig -h
 ifconfig 7 set pan_id 0xbeef | set pan_id to 0xbeef
-ifconfig 7 set addr \<value> | set ip (**own, or receiver??**)
 ifconfig 7 set channel 17 | set channel to 17
 udp send ff02::1 9999 msgHallo 3 | send "msgHallo" to multicast ip ffe02::1 on port 9999 3 times
 
