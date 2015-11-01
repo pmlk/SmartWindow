@@ -38,8 +38,6 @@ sudo ip link add link wpan0 name lowpan0 type lowpan
 modprobe
 ```
 
-
-
 ---
 
 ##RIOT setting up wpan interface
