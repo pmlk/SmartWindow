@@ -1,0 +1,24 @@
+#! /bin/sh
+
+#
+echo checking interfacesetup
+
+LOWPAN=$(ifconfig | grep lowpan0)
+
+#echo $LOWPAN
+
+if [ ! -z "$LOWPAN" ]
+then
+	echo "lowpan0 device was added successfully"
+	echo $(iwpan phy0 info | grep current_channel)
+	echo $(iwpan wpan0 info | grep pan_id)
+fi
+
+
+
+
+
+
+
+
+
