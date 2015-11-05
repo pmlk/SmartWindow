@@ -40,13 +40,40 @@
 #include "periph/adc.h"
 #include "mpl3115a2.h" 
 #include "hdc1000.h"
+#include "periph/pwm.h"
+#include "servo.h"
+
+
+ //----------------------Servo Anfang
+
+ #define DEV         PWM_0
+#define CHANNEL     0
+
+#define SERVO_MIN        (1000U)
+#define SERVO_MAX        (2000U)
+
+/* these are defined outside the limits of the servo_init min/max parameters above */
+/* we will test the clamping functionality of the servo_set function. */
+#define STEP_LOWER_BOUND (900U)
+#define STEP_UPPER_BOUND (2100U)
+
+/* Step size that we move per WAIT us */
+#define STEP             (10U)
+
+/* Sleep time between updates, no need to update the servo position more than
+ * once per cycle */
+#define WAIT             (10000U)
+
+//static servo_t servo;
+
+//------------------------Servo Ende
 
 #if ADC_NUMOF < 1
 #error "Please enable at least 1 ADC device to run this test"
 #endif
 
 #define RES             ADC_RES_10BIT
-#define DELAY           (100 * 1000U)
+#define DELAY           (100U)
 #define DELAY2      2
 #define SLEEP       (1000 * 1000U)
 
@@ -123,7 +150,23 @@ int main(void)
 
     //-------- Ende Initialisierung Feuchtigkeits Sensor --------
 
-    puts("\n");
+    /* puts("\n");
+
+    int res;
+    int pos = (STEP_LOWER_BOUND + STEP_UPPER_BOUND) / 2;
+    int step = STEP;
+
+    puts("\nRIOT RC servo test");
+    puts("Connect an RC servo or scope to PWM_0 channel 0 to see anything");
+
+    res = servo_init(&servo, DEV, CHANNEL, SERVO_MIN, SERVO_MAX);
+    if (res < 0) {
+        puts("Errors while initializing servo");
+        return -1;
+    }
+    puts("Servo initialized.");
+
+    */
 
     while (1) {
 
@@ -180,37 +223,45 @@ int main(void)
         */
 
         /* Ende Ausgabe Feuchtigkeitssensor */
+           
+        float max = 0.0;
+        int volume = 0;
 
-        
-        int werte[1000];
-        int max = 0;
-
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < 100; i++)
         {
             
-            werte[i] = adc_sample(0, 3);
-            //xtimer_usleep(DELAY);
-            printf("%d\n", werte[i]);
-        }
+            volume = adc_sample(0, 3);
 
-
-        for (int i = 0; i < 1000; i++)
-        {            
-            if (werte[i] > max)
+            if (((float) (volume)) > max)
             {
-                puts("blubb");
-                //printf("a \n");
-                //max = werte[i];                
-            }            
+                max = (float) (volume) * 0.277 + 40.0;
+            }
+
+            xtimer_usleep(DELAY);
+            //printf("%d\n", max);
         }
 
-        printf("Maximum: %d\n", max);
+        printf("Maximum: %f\n", max);
+        xtimer_sleep(DELAY2);        
 
         //xtimer_sleep(DELAY2);
+
 
         /* sleep a little while */
         //xtimer_usleep(DELAY);
         //xtimer_sleep(DELAY2);
+
+        /* servo_set(&servo, pos);
+
+        pos += step;
+        if (pos <= STEP_LOWER_BOUND || pos >= STEP_UPPER_BOUND) {
+            step = -step;
+        }
+
+        xtimer_usleep(WAIT);
+
+        */
+
     }
 
     return 0;

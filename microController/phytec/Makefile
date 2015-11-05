@@ -3,10 +3,14 @@ include ../Makefile.tests_common
 
 FEATURES_REQUIRED = periph_adc
 FEATURES_REQUIRED = periph_i2c
+FEATURES_REQUIRED = periph_pwm
 
 USEMODULE += xtimer
 USEMODULE += mpl3115a2
 USEMODULE += hdc1000
+USEMODULE += servo
+
+LINKFLAGS += -u _printf_float
 
 ifneq (,$(TEST_MPL3115A2_I2C))
   CFLAGS += -DTEST_MPL3115A2_I2C=$(TEST_MPL3115A2_I2C)
