@@ -1,5 +1,7 @@
 APPLICATION = periph_adc
-include ../Makefile.tests_common
+BOARD ?= native
+RIOTBASE ?= $(CURDIR)/../..
+#include ../../../tests/Makefile.tests_common
 
 FEATURES_REQUIRED = periph_adc
 FEATURES_REQUIRED = periph_i2c
@@ -37,3 +39,4 @@ else
 endif
 
 include $(RIOTBASE)/Makefile.include
+
