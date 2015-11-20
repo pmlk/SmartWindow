@@ -33,7 +33,7 @@
 #endif
 
 #include <stdio.h>
-
+#include <math.h>
 #include "cpu.h"
 #include "board.h"
 #include "xtimer.h"
@@ -73,7 +73,7 @@ static servo_t servo;
 #endif
 
 #define RES             ADC_RES_10BIT
-#define DELAY           (100U)
+#define DELAY           (125U)
 #define DELAY2      4U
 #define SLEEP       (1000 * 1000U)
 
@@ -294,21 +294,25 @@ uint32_t getPressure(mpl3115a2_t *mplDevice){
 }
 
 float getVolume(void){
-    float max = 0.0;
-    int volume = 0;
-
-    for (int i = 0; i < 100; i++)
+    float volume = 0.0;
+    int volume_temp = 0;
+    float rms = 0;
+    for (int i = 0; i < 1000; i++)
     {
             
-        volume = adc_sample(0, 3);
-
-        if (((float) (volume)) > max){
-            max = (float) (volume) * 0.277;
-        }
+        volume_temp = adc_sample(0, 3);
+        rms = rms + (volume_temp * volume_temp);
         xtimer_usleep(DELAY);    
     }
-    printf("Lautstärke: %f\n", max);
-    return max;
+    volume = sqrt(rms/1000);
+    volume = volume * 1.19976 /10000;
+    
+    //printf("Lautstärke: %f\n", volume);
+    
+    volume = 20 * log10(volume/2*100000);
+    
+    printf("Lautstärke in dB: %f\n", volume);
+    return volume;
 }
 
 int getHumidity(hdc1000_t *hdcDevice){

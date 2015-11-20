@@ -1,6 +1,6 @@
 APPLICATION = periph_adc
 BOARD ?= native
-RIOTBASE ?= $(CURDIR)/../..
+RIOTBASE ?= $(CURDIR)/../../..
 #include ../../../tests/Makefile.tests_common
 
 FEATURES_REQUIRED = periph_adc
