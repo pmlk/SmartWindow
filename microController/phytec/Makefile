@@ -2,6 +2,7 @@ APPLICATION = periph_adc
 BOARD ?= native
 RIOTBASE ?= $(CURDIR)/../../..
 #include ../../../tests/Makefile.tests_common
+#DISABLE_MODULE += auto_init
 
 FEATURES_REQUIRED = periph_adc
 FEATURES_REQUIRED = periph_i2c

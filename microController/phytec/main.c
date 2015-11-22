@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "cpu.h"
 #include "board.h"
 #include "xtimer.h"
@@ -42,7 +43,8 @@
 #include "hdc1000.h"
 #include "periph/pwm.h"
 #include "servo.h"
-
+#include "thread.h"
+#include "mutex.h"
 
  //----------------------Servo Anfang
 
@@ -77,12 +79,13 @@ static servo_t servo;
 #define DELAY2      4U
 #define SLEEP       (1000 * 1000U)
 
+#define COMMAND_BUFFER 15
 static int values[ADC_NUMOF][ADC_MAX_CHANNELS];
 
 struct measuredData_t {
   int16_t temperature;
   uint32_t pressure;
-  float volume;
+  int volume;
   int humidity;
   int airQuality;
 };
@@ -94,9 +97,71 @@ bool initAll(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevice);
 struct measuredData_t getMeasuredData(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevice);
 int16_t getTemperature(mpl3115a2_t *mplDevice);
 uint32_t getPressure(mpl3115a2_t *mplDevice);
-float getVolume(void);
+int getVolume(void);
 int getHumidity(hdc1000_t *hdcDevice);
 int getAirQuality(void);
+
+enum eCommunicationCommand{
+    START_MEASUREMENT = 0,
+    START_OPEN_WINDOW,
+    START_CLOSE_WINDOW,
+    FINISH_MEASUREMENT,
+    FINISH_OPEN_WINDOW,
+    FINISH_CLOSE_WINDOW,
+};
+
+mutex_t mtx = MUTEX_INIT;
+
+volatile int storage = 1;
+kernel_pid_t main_id = KERNEL_PID_UNDEF;
+struct measuredData_t data;
+
+char t2_stack[THREAD_STACKSIZE_MAIN];
+
+void *communication_thread(void *arg)
+{
+    (void) arg;
+    enum eCommunicationCommand communicationCommand = START_MEASUREMENT;
+    msg_t msg;
+    
+    char command[COMMAND_BUFFER];
+    while(1){
+        strcpy(command, "Kommando1");
+        
+        if(strcmp(command, "Kommando1") == 0){
+            communicationCommand = START_MEASUREMENT;
+        }
+        else if(strcmp(command, "Kommando2") == 0){
+            communicationCommand = START_OPEN_WINDOW;
+        }
+        else if(strcmp(command, "Kommando3") == 0){
+            communicationCommand = START_CLOSE_WINDOW;
+        }
+        else if(strcmp(command, "Kommando4") == 0){
+            communicationCommand = FINISH_MEASUREMENT;
+        }
+        else if(strcmp(command, "Kommando5") == 0){
+            communicationCommand = FINISH_OPEN_WINDOW;
+        }
+        else if(strcmp(command, "Kommando6") == 0){
+            communicationCommand = FINISH_CLOSE_WINDOW;
+        }
+        
+        mutex_lock(&mtx);
+        msg.content.value = communicationCommand;
+        msg_send(&msg, main_id);
+        mutex_unlock(&mtx);
+        //communicationCommand = START;
+        //mutex_lock(&mtx);
+        //data = getMeasuredData(&mplDevice, &hdcDevice);
+        printf("second thread: %d\n", data.temperature);
+        //mutex_unlock(&mtx);
+       
+        //communicationCommand = FINISH;
+        xtimer_sleep(2);
+    }
+    return NULL;
+}
 
 
 int main(void)
@@ -107,66 +172,66 @@ int main(void)
     uint32_t pressure;
     int16_t temp;
     uint8_t status;
-
+    
     int hum;
     */
-
+    msg_t msg;
     int pos = (STEP_LOWER_BOUND + STEP_UPPER_BOUND) / 2;
     int step = STEP;
     bool b_openWindow = true;
+    int communication_thread_id = 0;
+    int communicationCommand;
 
+    communication_thread_id = thread_create(
+            t2_stack, sizeof(t2_stack),
+            THREAD_PRIORITY_MAIN - 1, CREATE_WOUT_YIELD | CREATE_STACKTEST,
+            communication_thread, NULL, "communication_thread");
+    communication_thread_id = communication_thread_id + 1 - 1;
     if (!initAll(&mplDevice, &hdcDevice)) {
         printf("Fehler bei Initialisierung der Devices");
         return 0;
     }
     while (1) {
+        mutex_lock(&mtx);
+        msg_receive(&msg);
+        communicationCommand = msg.content.value;
+        mutex_unlock(&mtx);
 
-        /* Beginn Ausgabe ADC */
-        /* convert each channel for this ADC device */
-        /* for (int i = 0; i < ADC_NUMOF; i++) {
-            for (int j = 0; j < ADC_MAX_CHANNELS; j++) {
-                values[i][j] = adc_sample(i, j);
-            }
-        }
-        */
-
-        /* print the results */
-        /*
-        printf("Values: ");
-        for (int i = 0; i < ADC_NUMOF; i++) {
-            for (int j = 0; j < ADC_MAX_CHANNELS; j++) {
-                if (values[i][j] >= 0) {
-                    printf("ADC_%i-CH%i: %4i  ", i, j, values[i][j]);
+        switch(communicationCommand){
+            case START_MEASUREMENT:
+                mutex_lock(&mtx);
+                data = getMeasuredData(&mplDevice, &hdcDevice);
+                mutex_unlock(&mtx);    
+            break;
+            case START_OPEN_WINDOW:
+                if(b_openWindow){
+                    if(openWindow(&servo, &pos, step)){
+                        b_openWindow = false;
+                        mutex_lock(&mtx);
+                        // finish in msg
+                        mutex_unlock(&mtx);
+                    }
+                
                 }
-            }
+       
+            break;
+            case START_CLOSE_WINDOW:
+                if(!b_openWindow) {
+                    if(closeWindow(&servo, &pos, step*2)){
+                        b_openWindow = true;
+                        mutex_lock(&mtx);
+                        // finish in msg     
+                        mutex_unlock(&mtx);
+                    }
+                }
+            break;
         }
-        printf("\n");
-        */
 
-        /* Ende Ausgabe ADC */
         
-           
-
-        /* sleep a little while */
-        //xtimer_usleep(DELAY);
-        //xtimer_sleep(DELAY2);
-        if(b_openWindow){
-            if(openWindow(&servo, &pos, step)){
-                b_openWindow = false;
-                getMeasuredData(&mplDevice, &hdcDevice);
-                xtimer_sleep(DELAY2);
-            }
-        }
-        else {
-            if(closeWindow(&servo, &pos, step*2)){
-                b_openWindow = true;
-                getMeasuredData(&mplDevice, &hdcDevice);
-                xtimer_sleep(DELAY2);
-            }
-        } 
+        
+            
+        
         xtimer_usleep(WAIT);
-        //printf("Servo ist gefahren2\n");
-
     }
 
     return 0;
@@ -193,6 +258,8 @@ bool openWindow(servo_t *servo, int *pos, int step){
 bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
     int res;
     //-------- Beginn Initialisierung ADC -------- 
+
+    main_id = thread_getpid();
 
     puts("\nRIOT ADC peripheral driver test\n");
     puts("This test simply converts each available ADC channel about every 10ms\n\n");
@@ -293,7 +360,7 @@ uint32_t getPressure(mpl3115a2_t *mplDevice){
     return pressure;
 }
 
-float getVolume(void){
+int getVolume(void){
     float volume = 0.0;
     int volume_temp = 0;
     float rms = 0;
@@ -310,9 +377,10 @@ float getVolume(void){
     //printf("Lautstärke: %f\n", volume);
     
     volume = 20 * log10(volume/2*100000);
-    
-    printf("Lautstärke in dB: %f\n", volume);
-    return volume;
+    volume *= 100;
+    volume_temp = (int) volume;
+    printf("Lautstärke in dB: %d\n", volume_temp);
+    return volume_temp;
 }
 
 int getHumidity(hdc1000_t *hdcDevice){
