@@ -8,49 +8,49 @@
 </head>
 <body text="#FFFFFF" bgcolor="#408080" link="#FF0000" alink="#FF0000" vlink="#FF0000">
 <h2>Limits</h2>
-
+<form method="post" action="{{ url_for('submit') }}">
 <table>
 <col style="width:200px"> <col style="width:200px"><col style="width:100px">
 <tr>
 <td></td>
-<td>Maximum Temperature</td>
-<td ><input type="number" name="MaxTemp" value="20" style="text-align: right; width: 50px"> &deg;C   </br></td>
-</tr>
-
-<tr>
-<td></td>
 <td>Minimum Temperature</td>
-<td><input type="number" name="MinTemp" value="26" style="text-align: right; width: 50px"> &deg;C   </br></td>
+<td><input type="number" name="MinTemp" value="{{ MinTemp }}" step="0.1" style="text-align: right; width: 50px"> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Maximum Humidity</td>
-<td><input type="number" name="MaxHum" value="30" style="text-align: right; width: 50px"> %   </br></td>
+<td>Maximum Temperature</td>
+<td><input type="number" name="MaxTemp" value="{{ MaxTemp }}" step="0.1" style="text-align: right; width: 50px"> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Minimum Humidity</td>
-<td><input type="number" name="MinHum" value="65" style="text-align: right; width: 50px"> %   </br></td>
+<td><input type="number" name="MinHum" value="{{ MinHum }}" step="0.1" style="text-align: right; width: 50px"> %   </br></td>
+</tr>
+
+<tr>
+<td></td>
+<td>Maximum Humidity</td>
+<td><input type="number" name="MaxHum" value="{{ MaxHum }}" step="0.1" style="text-align: right; width: 50px"> %   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Maximum CO2   </td>
-<td><input type="number" name="MaxCO2" value="0.1" style="text-align: right; width: 50px"> Vol. %   </br></td>
+<td><input type="number" name="MaxCO2" value="{{ MaxAir }}" step="0.1" style="text-align: right; width: 50px"> Vol. %   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Maximum Wind  </td>
-<td><input type="number" name="MaxWind" value="20.8" style="text-align: right; width: 50px"> m/s   </br></td>
+<td><input type="number" name="MaxWind" value="{{ MaxWind }}" step="0.1" style="text-align: right; width: 50px"> m/s   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Maximum Noise  </td>
-<td><input type="number" name="MaxNoise" value="60" style="text-align: right; width: 50px"> dB   </br></td>
+<td><input type="number" name="MaxNoise" value="{{ MaxSound }}" step="0.1" style="text-align: right; width: 50px"> dB   </br></td>
 </tr>
 
  </table>
@@ -61,9 +61,9 @@
 <tr>
 <td></td>
 <td><input type="submit" value="SUBMIT"></td>
-<td><input type="reset" value="RESET"></td>
+<td><input type="button"  onclick="window.location.href='/reset'" value="RESET"></td>
 </tr>
 </table>
-
+</form>
 </body>
 </html>

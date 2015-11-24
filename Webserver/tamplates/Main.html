@@ -30,7 +30,7 @@
    </br>  </br>
    <table><col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
 <tr>
-<td></td><td>Fenster ist</td><td><output>  </output>offen</td>
+<td></td><td>Fenster ist</td><td>{{ StateWindow }}</td>
 </tr>
    </table>
 
@@ -53,50 +53,50 @@
 <col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
 <tr>
 <td></td>
-<td>Outside Temperature</td>
-<td style="text-align: right"><output>  </output></td>
+<td>Inside Temperature</td>
+<td style="text-align: right">{{ InTemp }}</td>
 <td> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Inside Temperature</td>
-<td style="text-align: right"><output>  </output></td>
+<td>Outside Temperature</td>
+<td style="text-align: right">{{ OutTemp }}</td>
 <td> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Inside Humidity</td>
-<td style="text-align: right"><output>  </output></td>
+<td style="text-align: right">{{ InHum }}</td>
 <td> %</br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Outside Humidity</td>
-<td style="text-align: right"><output>  </output></td>
+<td style="text-align: right">{{ OutHum }}</td>
 <td> %   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Air Quality   </td>
-<td style="text-align: right"><output>  </output></td>
+<td style="text-align: right">{{ Air }}</td>
 <td> Vol. %   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Wind Force </td>
-<td style="text-align: right"><output>  </output></td>
+<td style="text-align: right">{{ Wind }}</td>
 <td> m/s   </br></td>
 </tr>
 
 <tr>
 <td></td>
 <td>Sound Level</td>
-<td style="text-align: right"><output >  </output></td>
+<td style="text-align: right">{{ Sound }}</td>
 <td> dB   </br></td>
 </tr>
 
@@ -108,7 +108,7 @@
 <tr>
 <td></td>
 <td></td>
-<td><input type="button" name="RELOAD" value="RELOAD"></td>
+<td><input type="button" onclick="location.href='/main'" name="RELOAD" value="RELOAD"></td>
 </tr>
 </table>
 </body>
