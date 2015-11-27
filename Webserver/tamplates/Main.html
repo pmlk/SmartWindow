@@ -5,7 +5,6 @@
 <meta name="author" content="Siemens">
 <meta name="editor" content="html-editor phase 5">
 <link rel="stylesheet" href="/static/css/Vorlage.css" type="text/css">
-<link rel="stylesheet" href="/static/css/Switch.css" type="text/css">
 </head>
 <body text="#FFFFFF" bgcolor="#408080" link="#FF0000" alink="#FF0000" vlink="#FF0000">
       <h2>Home</h2>
@@ -13,89 +12,89 @@
 <table>
 <col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
 <tr><td></td>
-<td>Mode</td> <td>
-<a style="text-align:center">
-<div class="onoffswitch" style="left:0px">
-    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-    <label class="onoffswitch-label" for="myonoffswitch">
-        <span class="onoffswitch-inner"></span>
-        <span class="onoffswitch-switch"></span>
-    </label>
-</div>
-</a>
-</td></tr>
+<td><b>Mode</b></td> <td>{{ Modus }}</td></tr>
 </table>
 
+</br>
 
-   </br>  </br>
-   <table><col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
-<tr>
-<td></td><td>Fenster ist</td><td>{{ StateWindow }}</td>
-</tr>
-   </table>
-
- </br>
-
-
- <table>
+<table>
 <col style="width:200px"> <col style="width:200px">
 <tr>
 <td></td>
-<td><input type="button" name="OPEN" value="OPEN"></td>
-<td><input type="button" name="CLOSE" value="CLOSE"></td>
+<td><input type="button" onclick="location.href='/manu'" name="MANUEL" value="MANUEL" {{ Manu }}></td>
+<td><input type="button" onclick="location.href='/auto'" name="AUTOMATIC" value="AUTOMATIC" {{ Auto }}></td>
 </tr>
 </table>
 
+</br>  </br>
 
-   </br> </br>
+<table><col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
+<tr>
+<td></td>
+<td><b>Window is</b></td><td>{{ StateWindow }}</td>
+</tr>
+</table>
+
+</br>
+
+<table>
+<col style="width:200px"> <col style="width:200px">
+<tr>
+<td></td>
+<td><input type="button" onclick="location.href='/open'" name="OPEN" value="OPEN" {{ ManOpen }}></td>
+<td><input type="button" onclick="location.href='/close'" name="CLOSE" value="CLOSE" {{ ManClose }}></td>
+</tr>
+</table>
+
+</br> </br>
 
 <table>
 <col style="width:200px"> <col style="width:200px"><col style="width:50px"><col style="width:50px">
 <tr>
 <td></td>
-<td>Inside Temperature</td>
+<td><b>Inside Temperature</b></td>
 <td style="text-align: right">{{ InTemp }}</td>
 <td> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Outside Temperature</td>
+<td><b>Outside Temperature</b></td>
 <td style="text-align: right">{{ OutTemp }}</td>
 <td> &deg;C   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Inside Humidity</td>
+<td><b>Inside Humidity</b></td>
 <td style="text-align: right">{{ InHum }}</td>
 <td> %</br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Outside Humidity</td>
+<td><b>Outside Humidity</b></td>
 <td style="text-align: right">{{ OutHum }}</td>
 <td> %   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Air Quality   </td>
+<td><b>Air Quality</b></td>
 <td style="text-align: right">{{ Air }}</td>
 <td> Vol. %   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Wind Force </td>
+<td><b>Wind Force</b></td>
 <td style="text-align: right">{{ Wind }}</td>
 <td> m/s   </br></td>
 </tr>
 
 <tr>
 <td></td>
-<td>Sound Level</td>
+<td><b>Sound Level</b></td>
 <td style="text-align: right">{{ Sound }}</td>
 <td> dB   </br></td>
 </tr>
