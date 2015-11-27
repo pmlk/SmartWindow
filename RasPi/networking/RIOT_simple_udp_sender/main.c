@@ -40,6 +40,8 @@ static const shell_command_t shell_commands[] = {
 
 extern void send(char *addr_str, char *port_str, char *data, unsigned int num,
                  unsigned int delay);
+                 
+extern void start_server(char *port_str);
 
 int smartWin_network_init(void);
 
@@ -55,7 +57,7 @@ int main(void)
 	char port[] = "9998";
 	//char data[] = "moinsen";
 	
-	char* msg[] = {"hi", "my", "name", "is", "Patrick", "whats", "your", "fabulous", "first", "and", "last", "name"};
+	char* msg[] = {"hi", "my", "name", "is", "Patrick", "whats", "your", "fabulous", "first", "and", "last", "name", "!"};
 	
 	smartWin_network_init();
 	int i = 0;
@@ -64,6 +66,9 @@ int main(void)
 		smartWin_network_init();
 		send(addr, port, msg[i], 1, 1000);
 	}
+	
+	char port_rec[] = "9999";
+	start_server(port_rec);
 	
     /* start shell */
 
