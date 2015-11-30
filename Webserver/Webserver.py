@@ -140,7 +140,7 @@ def open():
     Modus = (cursor.fetchone())[0]
     if not (Modus):
         cursor.execute(Ins + "ManOpen" + Val + "1" +")")
-        cursor.execute(Ins + "ManClose" + Val + "0" +")")    
+        cursor.execute(Ins + "ManClose" + Val + "0" +")")
         connection.commit()
     return Main()
 
@@ -164,9 +164,11 @@ def manu():
 @app.route("/auto")
 def auto():
     cursor.execute(Ins + "Modus" + Val + "1" +")")
+    cursor.execute(Ins + "ManOpen" + Val + "0" +")")
+    cursor.execute(Ins + "ManClose" + Val + "0" +")")
     connection.commit()
     return Main()
 
 
 if __name__ == "__main__":
-    app.run(host='192.168.0.3')
+    app.run(host='192.168.0.3', port=80)
