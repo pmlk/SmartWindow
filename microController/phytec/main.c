@@ -45,6 +45,7 @@
 #include "servo.h"
 #include "thread.h"
 #include "mutex.h"
+#include "sendReceive.h"
 
  //----------------------Servo Anfang
 
@@ -79,7 +80,24 @@ static servo_t servo;
 #define DELAY2      4U
 #define SLEEP       (1000 * 1000U)
 
-#define COMMAND_BUFFER 15
+
+#define SW_OPEN_WINDOW              "PUT_Win/Open"
+#define SW_CLOSE_WINDOW             "PUT_Win/Close"
+
+#define SW_FINISH_OPEN_WINDOW       SW_OPEN_WINDOW
+#define SW_FINISH_CLOSE_WINDOW      SW_CLOSE_WINDOW
+
+#define IN
+
+#define SENS_TEMP                   "Temp"
+#define SENS_AIR_PRESSURE           "AirPressure"
+#define SENS_AIR_QUALITY            "AirQuality"
+#define SENS_VOLUME                 "Volume"
+#define SENS_HUMIDITY               "Humidity"
+
+#define GET_ALL                     "GET_All"
+ 
+
 static int values[ADC_NUMOF][ADC_MAX_CHANNELS];
 
 struct measuredData_t {
@@ -100,6 +118,7 @@ uint32_t getPressure(mpl3115a2_t *mplDevice);
 int getVolume(void);
 int getHumidity(hdc1000_t *hdcDevice);
 int getAirQuality(void);
+void sendString(char* sendBuffer, char* sensor, char* value);
 
 enum eCommunicationCommand{
     START_MEASUREMENT = 0,
@@ -116,54 +135,157 @@ volatile int storage = 1;
 kernel_pid_t main_id = KERNEL_PID_UNDEF;
 struct measuredData_t data;
 
-char t2_stack[THREAD_STACKSIZE_MAIN];
+char t2_stack[THREAD_STACKSIZE_DEFAULT];
 
+//static char pp_stack[THREAD_STACKSIZE_DEFAULT];
+static char pp_buffer[PP_BUF_SIZE];
+static msg_t pp_msg_queue[PP_MSG_QUEUE_SIZE];
+
+/*Kommunikations Thread*/
+/*empfängt und sendet Nachrichten an den Raspberry PI*/
+/*gibt außerdem den Befehl mit Hilfe von einer Messagequeue an den Main-Thread weiter*/
 void *communication_thread(void *arg)
 {
     (void) arg;
     enum eCommunicationCommand communicationCommand = START_MEASUREMENT;
     msg_t msg;
+    char sendBuffer[PP_BUF_SIZE];
+    char command[PP_BUF_SIZE];
+    char valueString[10];
+    //
+    //
+    //
+    //
+    struct sockaddr_in6 server_addr;
+    char src_addr_str[IPV6_ADDR_MAX_STR_LEN];
+    uint16_t port;
     
-    char command[COMMAND_BUFFER];
-    while(1){
-        strcpy(command, "Kommando1");
+    msg_init_queue(pp_msg_queue, PP_MSG_QUEUE_SIZE);
+    int pp_socket = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+    
+    int res;
+    struct sockaddr_in6 src;
+
+
+    port = (uint16_t)PP_PORT;
+    if (port == 0) {
+        puts("Error: invalid port specified");
+        return NULL;
+    }
+    
+    server_addr.sin6_family = AF_INET6;
+    memset(&server_addr.sin6_addr, 0, sizeof(server_addr.sin6_addr));
+    server_addr.sin6_port = htons(port);
+    if (pp_socket < 0) {
+        puts("error initializing socket");
+        return NULL;
+    }
+    
+    if (bind(pp_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+        puts("error binding socket");
+        return NULL;
+    }
+    
+    // clear buffer
+    memset(pp_buffer,0,PP_BUF_SIZE);
+    
+    printf("Success: started UDP server on port %" PRIu16 "\n", port);
+    
+    while (1) {
+        puts("waitMsg\n");
         
-        if(strcmp(command, "Kommando1") == 0){
-            communicationCommand = START_MEASUREMENT;
-        }
-        else if(strcmp(command, "Kommando2") == 0){
-            communicationCommand = START_OPEN_WINDOW;
-        }
-        else if(strcmp(command, "Kommando3") == 0){
-            communicationCommand = START_CLOSE_WINDOW;
-        }
-        else if(strcmp(command, "Kommando4") == 0){
-            communicationCommand = FINISH_MEASUREMENT;
-        }
-        else if(strcmp(command, "Kommando5") == 0){
-            communicationCommand = FINISH_OPEN_WINDOW;
-        }
-        else if(strcmp(command, "Kommando6") == 0){
-            communicationCommand = FINISH_CLOSE_WINDOW;
+        socklen_t src_len = sizeof(struct sockaddr_in6);
+        
+        // blocking receive, waiting for data
+        if ((res = recvfrom(pp_socket, pp_buffer, sizeof(pp_buffer), 0,
+                            (struct sockaddr *)&src, &src_len)) < 0) {
+            puts("Error on receive");
         }
         
-        mutex_lock(&mtx);
-        msg.content.value = communicationCommand;
-        msg_send(&msg, main_id);
-        mutex_unlock(&mtx);
-        //communicationCommand = START;
-        //mutex_lock(&mtx);
-        //data = getMeasuredData(&mplDevice, &hdcDevice);
-        printf("second thread: %d\n", data.temperature);
-        //mutex_unlock(&mtx);
-       
-        //communicationCommand = FINISH;
-        xtimer_sleep(2);
+        else if (res == 0) {
+            puts("Peer did shut down");
+        }
+        
+        else { 
+           
+            inet_ntop(AF_INET6, &(src.sin6_addr),
+                      src_addr_str, sizeof(src_addr_str));
+            
+            strcpy(command, pp_buffer);
+            if(strcmp(command, GET_ALL) == 0){
+                communicationCommand = START_MEASUREMENT;
+            }
+            else if(strcmp(command, SW_OPEN_WINDOW) == 0){
+                communicationCommand = START_OPEN_WINDOW;
+            }
+            else if(strcmp(command, SW_CLOSE_WINDOW) == 0){
+                communicationCommand = START_CLOSE_WINDOW;
+            }
+            
+            printf("Befehl: %s\n", pp_buffer);
+            
+            msg.content.value = communicationCommand;
+            
+            msg_send(&msg, main_id);
+            msg_receive(&msg);
+            communicationCommand = msg.content.value;
+            switch(communicationCommand){
+                case START_MEASUREMENT:
+
+                break;
+                case START_OPEN_WINDOW: 
+
+                break;
+                case START_CLOSE_WINDOW:
+
+                break;
+                case FINISH_MEASUREMENT:
+                    //temperature 
+                    sprintf(valueString, "%f", (float)(data.temperature) / 10);
+                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    pp_send(src_addr_str, sendBuffer);
+                    //pressure
+                    sprintf(valueString, "%d", (int)(data.pressure));
+                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    pp_send(src_addr_str, sendBuffer);
+                    // volume
+                    sprintf(valueString, "%f", (float)(data.volume) / 100);
+                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    pp_send(src_addr_str, sendBuffer);
+                    // humidity
+                    sprintf(valueString, "%f", (float)(data.humidity) / 100); 
+                    sendString(sendBuffer, SENS_TEMP, valueString);
+                    pp_send(src_addr_str, sendBuffer);
+                    // airQuality
+                    sprintf(valueString, "%f", (float)(data.airQuality) / 100); 
+                    sendString(sendBuffer, SENS_TEMP, valueString);
+                    pp_send(src_addr_str, sendBuffer);
+                break;
+                case FINISH_OPEN_WINDOW:
+                    pp_send(src_addr_str, SW_FINISH_OPEN_WINDOW);
+                break;
+
+                case FINISH_CLOSE_WINDOW:
+                    pp_send(src_addr_str, SW_FINISH_CLOSE_WINDOW);
+                break;
+            }
+
+            
+        }
+        
+        // clear buffer
+        for(int i = 0; i < res; i++)
+        {
+            command[i] = 0;
+            pp_buffer[i] = 0;
+        }
+        
     }
     return NULL;
+
 }
 
-
+/*main Thread, kümmert sich um die Initialisierung und steurt den Programmfluß, Sensoren auslesen und Aktoren steuern*/ 
 int main(void)
 {   
     mpl3115a2_t mplDevice; // device for MPL3115 temperature and pressure sensor
@@ -184,7 +306,7 @@ int main(void)
 
     communication_thread_id = thread_create(
             t2_stack, sizeof(t2_stack),
-            THREAD_PRIORITY_MAIN - 1, CREATE_WOUT_YIELD | CREATE_STACKTEST,
+            THREAD_PRIORITY_MAIN , /*CREATE_WOUT_YIELD |*/ CREATE_STACKTEST,
             communication_thread, NULL, "communication_thread");
     communication_thread_id = communication_thread_id + 1 - 1;
     if (!initAll(&mplDevice, &hdcDevice)) {
@@ -201,17 +323,28 @@ int main(void)
             case START_MEASUREMENT:
                 mutex_lock(&mtx);
                 data = getMeasuredData(&mplDevice, &hdcDevice);
-                mutex_unlock(&mtx);    
+                mutex_unlock(&mtx);
+                communicationCommand = FINISH_MEASUREMENT; 
+
+                mutex_lock(&mtx);
+                msg.content.value = communicationCommand;
+                msg_send(&msg, communication_thread_id);
+                mutex_unlock(&mtx);   
             break;
             case START_OPEN_WINDOW:
                 if(b_openWindow){
                     if(openWindow(&servo, &pos, step)){
-                        b_openWindow = false;
-                        mutex_lock(&mtx);
-                        // finish in msg
-                        mutex_unlock(&mtx);
+                        b_openWindow = false;                        
                     }
                 
+                }
+                else{
+                    communicationCommand = FINISH_OPEN_WINDOW;
+
+                    mutex_lock(&mtx);
+                    msg.content.value = communicationCommand;
+                    msg_send(&msg, communication_thread_id);
+                    mutex_unlock(&mtx);
                 }
        
             break;
@@ -219,10 +352,15 @@ int main(void)
                 if(!b_openWindow) {
                     if(closeWindow(&servo, &pos, step*2)){
                         b_openWindow = true;
-                        mutex_lock(&mtx);
-                        // finish in msg     
-                        mutex_unlock(&mtx);
                     }
+                }
+                else{
+                    communicationCommand = FINISH_CLOSE_WINDOW;
+
+                    mutex_lock(&mtx);
+                    msg.content.value = communicationCommand;
+                    msg_send(&msg, communication_thread_id);
+                    mutex_unlock(&mtx);
                 }
             break;
         }
@@ -236,7 +374,8 @@ int main(void)
 
     return 0;
 }
-
+/*Funktion die den Servo steuert und damit das Fenster schließt*/
+/*Gibt zurück, wenn das Fenster fertig geschlossen ist, muss also bis dahin zyklisch aufgerufen werden*/
 bool closeWindow(servo_t *servo, int *pos, int step){
     servo_set(servo, *pos);
     *pos += step;
@@ -245,7 +384,8 @@ bool closeWindow(servo_t *servo, int *pos, int step){
     } 
     return false;
 }
-
+/*Funktion die den Servo steuert und damit das Fenster öffnet*/
+/*Gibt zurück, wenn das Fenster fertig geöffnet ist, muss also bis dahin zyklisch aufgerufen werden*/
 bool openWindow(servo_t *servo, int *pos, int step){
     servo_set(servo, *pos);
     *pos -= step;
@@ -254,7 +394,7 @@ bool openWindow(servo_t *servo, int *pos, int step){
     }
     return false;
 }
-
+/*Funktion zum Initialisieren aller Aktoren und Sensoren*/
 bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
     int res;
     //-------- Beginn Initialisierung ADC -------- 
@@ -327,9 +467,13 @@ bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
         return false;
     }
     puts("Servo initialized.");
+
+    sw_network_init();
+
+
     return true;
 }
-
+/*Funktion zum Ermitteln aller Messwerte*/
 struct measuredData_t getMeasuredData(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevice){
     struct measuredData_t allMeasuredData;
 
@@ -338,19 +482,21 @@ struct measuredData_t getMeasuredData(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevi
     allMeasuredData.volume = getVolume();
     allMeasuredData.humidity = getHumidity(hdcDevice);
     allMeasuredData.airQuality = getAirQuality();
-
+    /*Rückgabe in struct, welches alle Messwerte enthält*/
 
     return allMeasuredData;
 }
-
+/*Funktion zur Ermittlung der Temperatur*/
 int16_t getTemperature(mpl3115a2_t *mplDevice){
     int16_t temp = 0;
 
     mpl3115a2_read_temp(mplDevice, &temp);
+    /*Die Temperatur wird in °C angegeben und der Wert muss noch durch 10 geteilt werden*/
+    /*Ein Wert von 244 entspricht dann als Beispiel 24,4°C*/
     printf("Temperatur: %5i\n", temp);
     return temp;
 }
-
+/*Funktion zur Ermittlung des Luftdrucks*/
 uint32_t getPressure(mpl3115a2_t *mplDevice){
     uint32_t pressure;
     uint8_t status;
@@ -359,7 +505,7 @@ uint32_t getPressure(mpl3115a2_t *mplDevice){
     printf("Druck: %d\n", (int) (pressure));
     return pressure;
 }
-
+/*Funktion zum Ermitteln der Lautstärke und Umrechnung in dB*/
 int getVolume(void){
     float volume = 0.0;
     int volume_temp = 0;
@@ -379,10 +525,11 @@ int getVolume(void){
     volume = 20 * log10(volume/2*100000);
     volume *= 100;
     volume_temp = (int) volume;
+    /*Lautstärke wird als dB Wert angegebn und der Referenzwert ist 20µPa*/
     printf("Lautstärke in dB: %d\n", volume_temp);
     return volume_temp;
 }
-
+/*Funktion zum Ermitteln der Feuchtigkeit*/
 int getHumidity(hdc1000_t *hdcDevice){
     uint16_t rawtemp, rawhum;
     int temp_hum, hum;
@@ -398,15 +545,34 @@ int getHumidity(hdc1000_t *hdcDevice){
     //printf("Raw data T: %5i   RH: %5i\n", rawtemp, rawhum);
     hdc1000_convert(rawtemp, rawhum,  &temp_hum, &hum);
     //printf("Data T: %d   RH: %d\n", temp_hum, hum);
+    /*Ausgabe Feuchtigkeit als relative Feuchtigkeit in Prozent*/
     printf("Luftfeuchtigkeit: %d\n", hum);   
     return hum;
     /* Ende Ausgabe Feuchtigkeitssensor */
-}
 
+}
+/*Funktion zum ermitteln der Luftqualität in Prozent*/
 int getAirQuality(void){
     int airQuality = 0;
+    float airQuality_temp = 0;
 
     airQuality = adc_sample(0, 2);
+    airQuality_temp = (float)(airQuality) /1024 * 100;
+    airQuality = (float)(airQuality_temp * 100);
     printf("Luftqualität: %d\n", airQuality);
     return airQuality;
+}
+/*Funktion zum Erstellen der Befehlsstrings beim Übermitteln der Nachrichten an den Rasperry PI*/
+void sendString(char* sendBuffer, char* sensor, char* value){
+    
+    strcpy(sendBuffer, "PUT_");
+    strcmp(sendBuffer, sensor);
+    /*Abfrage welcher Sensorknoten man selber ist*/
+    #ifdef IN
+        strcmp(sendBuffer, "_IN");
+    #else
+        strcmp(sendBuffer, "_OUT");
+    #endif
+    strcmp(sendBuffer, "/");
+    strcmp(sendBuffer, value);
 }
