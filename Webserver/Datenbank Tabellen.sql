@@ -10,7 +10,7 @@ Rev: 0.0 - 22.11.2015 erstellt
 Create Schema SmartWindow;
 */
 
-/* -- Drop Befehle
+/* -- Drop Befehle Alte Tabellen
 Drop table SmartWindow.Air;
 Drop table SmartWindow.InHum;
 Drop table SmartWindow.InTemp;
@@ -31,10 +31,35 @@ Drop table SmartWindow.StateWindow;
 Drop table SmartWindow.Wind;
 */
 
+/* -- Drop Befehle Neue Tabellen
+Drop table SmartWindow.AirPressure_IN;
+Drop table SmartWindow.AirPressure_MAX;
+Drop table SmartWindow.AirPressure_OUT;
+Drop table SmartWindow.AirQuality_IN;
+Drop table SmartWindow.AirQuality_MAX;
+Drop table SmartWindow.AirQuality_OUT;
+Drop table SmartWindow.AutoModus;
+Drop table SmartWindow.Humidity_IN;
+Drop table SmartWindow.Humidity_MAX;
+Drop table SmartWindow.Humidity_MIN;
+Drop table SmartWindow.Humidity_OUT;
+Drop table SmartWindow.ManClose;
+Drop table SmartWindow.ManOpen;
+Drop table SmartWindow.Win_Open;
+Drop table SmartWindow.Temp_IN;
+Drop table SmartWindow.Temp_MAX;
+Drop table SmartWindow.Temp_MIN;
+Drop table SmartWindow.Temp_OUT;
+Drop table SmartWindow.Volume_IN;
+Drop table SmartWindow.Volume_MAX;
+Drop table SmartWindow.Volume_OUT;
+*/
+
+
 	-- Befehle
 
 -- Modus 0: Manuel 1: Automatik
-Create table SmartWindow.Modus(
+Create table SmartWindow.AutoModus(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		bool not null default TRUE);
@@ -55,49 +80,67 @@ Create table SmartWindow.ManClose(
 	-- Werte der Sensoren
     
 -- Fenster Status 0: geschlossen 1: offen
-Create table SmartWindow.StateWindow(
+Create table SmartWindow.Win_Open(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		bool not null);
     
 -- Außentemperatur in Grad Celsius
-Create table SmartWindow.OutTemp(
+Create table SmartWindow.Temp_OUT(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
     
 -- Innentemperatur in Grad Celsius
-Create table SmartWindow.InTemp(
+Create table SmartWindow.Temp_IN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
     
 -- Luftfeuchtigkeit außen in %
-Create table SmartWindow.OutHum(
+Create table SmartWindow.Humidity_Out(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
     
 -- Luftfeuchtigkeit innen in %
-Create table SmartWindow.InHum(
+Create table SmartWindow.Humidity_IN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
     
--- Luftqualität in Vol. %
-Create table SmartWindow.Air(
+-- Außenluftqualität in Vol. %
+Create table SmartWindow.AirQuality_OUT(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
-      
--- Windgeschwindigkeit in m/s
-Create table SmartWindow.Wind(
+
+-- Innenluftqualität in Vol. %
+Create table SmartWindow.AirQuality_IN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
-        
--- Geräuschlevel in dB
-Create table SmartWindow.Sound(
+            
+-- Außenwindgeschwindigkeit in m/s
+Create table SmartWindow.AirPressure_OUT(
+	ID			INT primary key	Auto_increment,
+    Zeitstempel	timestamp unique not null,
+    Wert		int not null);
+ 
+-- Innenwindgeschwindigkeit in m/s
+Create table SmartWindow.AirPressure_IN(
+	ID			INT primary key	Auto_increment,
+    Zeitstempel	timestamp unique not null,
+    Wert		int not null);
+    
+-- Außengeräuschlevel in dB
+Create table SmartWindow.Volume_OUT(
+	ID			INT primary key	Auto_increment,
+    Zeitstempel	timestamp unique not null,
+    Wert		float not null);
+  
+-- Innengeräuschlevel in dB
+Create table SmartWindow.Volume_IN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float not null);
@@ -106,67 +149,70 @@ Create table SmartWindow.Sound(
     -- Limits zur Berechnung
     
 -- Minimale Temperatur in Grad Celsius
-Create table SmartWindow.MinTemp(
+Create table SmartWindow.Temp_MIN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 20.0);
     
 -- Maximale Temperatur in Grad Celsius
-Create table SmartWindow.MaxTemp(
+Create table SmartWindow.Temp_MAX(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 26.0);
     
 -- Minimale  Luftfeuchtigkeit in %
-Create table SmartWindow.MinHum(
+Create table SmartWindow.Humidity_MIN(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 30.0);
     
 -- Maximale Luftfeuchtigkeit in %
-Create table SmartWindow.MaxHum(
+Create table SmartWindow.Humidity_MAX(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 65.0);
     
 -- Maximales CO2 in Vol.%
-Create table SmartWindow.MaxAir(
+Create table SmartWindow.AirQuality_MAX(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 0.1);
     
 -- Maximale Windgeschwindigkeit in m/s
-Create table SmartWindow.MaxWind(
+Create table SmartWindow.AirPressure_MAX(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
-    Wert		float default 20.8);
+    Wert		int default 1020);
     
 -- Maximale Lautstärke in db
-Create table SmartWindow.MaxSound(
+Create table SmartWindow.Volume_MAX(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		float default 60.0);
 
 
 	-- Anfangswerte aller Tabellen
-Insert Into SmartWindow.Air(Zeitstempel, Wert) Value (current_timestamp(), 0.01);    
-Insert Into SmartWindow.InHum(Zeitstempel, Wert) Value (current_timestamp(), 40); 
-Insert Into SmartWindow.InTemp(Zeitstempel, Wert) Value (current_timestamp(), 22); 
+Insert Into SmartWindow.AirPressure_IN(Zeitstempel, Wert) Value (current_timestamp(), 1010); 
+Insert Into SmartWindow.AirPressure_MAX(Zeitstempel) Value (current_timestamp());
+Insert Into SmartWindow.AirPressure_OUT(Zeitstempel, Wert) Value (current_timestamp(), 1016);
+Insert Into SmartWindow.AirQuality_IN(Zeitstempel, Wert) Value (current_timestamp(), 0.01);
+Insert Into SmartWindow.AirQuality_MAX(Zeitstempel) Value (current_timestamp()); 
+Insert Into SmartWindow.AirQuality_OUT(Zeitstempel, Wert) Value (current_timestamp(), 0.01);
+Insert Into SmartWindow.AutoModus(Zeitstempel) Value (current_timestamp());
+Insert Into SmartWindow.Humidity_IN(Zeitstempel, Wert) Value (current_timestamp(), 40);  
+Insert Into SmartWindow.Humidity_MAX(Zeitstempel) Value (current_timestamp());
+Insert Into SmartWindow.Humidity_MIN(Zeitstempel) Value (current_timestamp()); 
+Insert Into SmartWindow.Humidity_OUT(Zeitstempel, Wert) Value (current_timestamp(), 70);
 Insert Into SmartWindow.ManClose(Zeitstempel, Wert) Value (current_timestamp(), FALSE); 
-Insert Into SmartWindow.ManOpen(Zeitstempel, Wert) Value (current_timestamp(), FALSE); 
-Insert Into SmartWindow.MaxAir(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MaxHum(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MaxSound(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MaxWind(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MaxTemp(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MinHum(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.MinTemp(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.Modus(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.OutHum(Zeitstempel, Wert) Value (current_timestamp(), 70); 
-Insert Into SmartWindow.OutTemp(Zeitstempel, Wert) Value (current_timestamp(), 4); 
-Insert Into SmartWindow.Sound(Zeitstempel, Wert) Value (current_timestamp(), 20); 
-Insert Into SmartWindow.StateWindow(Zeitstempel, Wert) Value (current_timestamp(), FALSE); 
-Insert Into SmartWindow.Wind(Zeitstempel, Wert) Value (current_timestamp(), 5.8); 
+Insert Into SmartWindow.ManOpen(Zeitstempel, Wert) Value (current_timestamp(), FALSE);
+Insert Into SmartWindow.Win_Open(Zeitstempel, Wert) Value (current_timestamp(), FALSE); 
+Insert Into SmartWindow.Temp_IN(Zeitstempel, Wert) Value (current_timestamp(), 22); 
+Insert Into SmartWindow.Temp_MAX(Zeitstempel) Value (current_timestamp());  
+Insert Into SmartWindow.Temp_MIN(Zeitstempel) Value (current_timestamp());  
+Insert Into SmartWindow.Temp_OUT(Zeitstempel, Wert) Value (current_timestamp(), 4); 
+Insert Into SmartWindow.Volume_IN(Zeitstempel, Wert) Value (current_timestamp(), 20);      
+Insert Into SmartWindow.Volume_MAX(Zeitstempel) Value (current_timestamp()); 
+Insert Into SmartWindow.Volume_OUT(Zeitstempel, Wert) Value (current_timestamp(), 20);  
 
 
 Commit;
