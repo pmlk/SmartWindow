@@ -41,13 +41,20 @@
 #include "periph/adc.h"
 #include "mpl3115a2.h" 
 #include "hdc1000.h"
-#include "periph/pwm.h"
-#include "servo.h"
+
 #include "thread.h"
 #include "mutex.h"
 #include "sendReceive.h"
 
- //----------------------Servo Anfang
+#define IN
+
+#ifdef IN
+
+//----------------------Servo Anfang
+
+// Header für Servo
+#include "periph/pwm.h"
+#include "servo.h"
 
 #define DEV         PWM_0
 #define CHANNEL     0
@@ -65,16 +72,19 @@
 
 /* Sleep time between updates, no need to update the servo position more than
  * once per cycle */
-#define WAIT             (10000U)
 
 static servo_t servo;
 
+#endif
+
 //------------------------Servo Ende
+
 
 #if ADC_NUMOF < 1
 #error "Please enable at least 1 ADC device to run this test"
 #endif
 
+#define WAIT             (10000U)
 #define RES             ADC_RES_10BIT
 #define DELAY           (125U)
 #define DELAY2      4U
@@ -87,7 +97,6 @@ static servo_t servo;
 #define SW_FINISH_OPEN_WINDOW       SW_OPEN_WINDOW
 #define SW_FINISH_CLOSE_WINDOW      SW_CLOSE_WINDOW
 
-#define IN
 
 #define SENS_TEMP                   "Temp"
 #define SENS_AIR_PRESSURE           "AirPressure"
@@ -108,8 +117,10 @@ struct measuredData_t {
   int airQuality;
 };
 
+#ifdef IN
 bool openWindow(servo_t *servo, int *pos, int step);
 bool closeWindow(servo_t *servo, int *pos, int step);
+#endif
 
 bool initAll(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevice);
 struct measuredData_t getMeasuredData(mpl3115a2_t *mplDevice, hdc1000_t *hdcDevice);
@@ -122,11 +133,13 @@ void sendString(char* sendBuffer, char* sensor, char* value);
 
 enum eCommunicationCommand{
     START_MEASUREMENT = 0,
+    FINISH_MEASUREMENT,
+    #ifdef IN
     START_OPEN_WINDOW,
     START_CLOSE_WINDOW,
-    FINISH_MEASUREMENT,
     FINISH_OPEN_WINDOW,
     FINISH_CLOSE_WINDOW,
+    #endif
 };
 
 mutex_t mtx = MUTEX_INIT;
@@ -215,12 +228,14 @@ void *communication_thread(void *arg)
             if(strcmp(command, GET_ALL) == 0){
                 communicationCommand = START_MEASUREMENT;
             }
+            #ifdef IN
             else if(strcmp(command, SW_OPEN_WINDOW) == 0){
                 communicationCommand = START_OPEN_WINDOW;
             }
             else if(strcmp(command, SW_CLOSE_WINDOW) == 0){
                 communicationCommand = START_CLOSE_WINDOW;
             }
+            #endif
             
             printf("Befehl: %s\n", pp_buffer);
             
@@ -233,10 +248,12 @@ void *communication_thread(void *arg)
                 case START_MEASUREMENT:
 
                 break;
+                #ifdef IN
                 case START_OPEN_WINDOW: 
 
                 break;
                 case START_CLOSE_WINDOW:
+                #endif
 
                 break;
                 case FINISH_MEASUREMENT:
@@ -261,6 +278,7 @@ void *communication_thread(void *arg)
                     sendString(sendBuffer, SENS_TEMP, valueString);
                     pp_send(src_addr_str, sendBuffer);
                 break;
+                #ifdef IN
                 case FINISH_OPEN_WINDOW:
                     pp_send(src_addr_str, SW_FINISH_OPEN_WINDOW);
                 break;
@@ -268,6 +286,7 @@ void *communication_thread(void *arg)
                 case FINISH_CLOSE_WINDOW:
                     pp_send(src_addr_str, SW_FINISH_CLOSE_WINDOW);
                 break;
+                #endif
             }
 
             
@@ -298,9 +317,11 @@ int main(void)
     int hum;
     */
     msg_t msg;
+    #ifdef IN
     int pos = (STEP_LOWER_BOUND + STEP_UPPER_BOUND) / 2;
     int step = STEP;
     bool b_openWindow = true;
+    #endif
     int communication_thread_id = 0;
     int communicationCommand;
 
@@ -331,6 +352,7 @@ int main(void)
                 msg_send(&msg, communication_thread_id);
                 mutex_unlock(&mtx);   
             break;
+            #ifdef IN
             case START_OPEN_WINDOW:
                 if(b_openWindow){
                     if(openWindow(&servo, &pos, step)){
@@ -363,19 +385,18 @@ int main(void)
                     mutex_unlock(&mtx);
                 }
             break;
-        }
-
-        
-        
-            
+            #endif
+        }           
         
         xtimer_usleep(WAIT);
     }
 
     return 0;
 }
+
 /*Funktion die den Servo steuert und damit das Fenster schließt*/
 /*Gibt zurück, wenn das Fenster fertig geschlossen ist, muss also bis dahin zyklisch aufgerufen werden*/
+#ifdef IN
 bool closeWindow(servo_t *servo, int *pos, int step){
     servo_set(servo, *pos);
     *pos += step;
@@ -394,9 +415,13 @@ bool openWindow(servo_t *servo, int *pos, int step){
     }
     return false;
 }
+#endif
+
 /*Funktion zum Initialisieren aller Aktoren und Sensoren*/
 bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
+    #ifdef IN
     int res;
+    #endif
     //-------- Beginn Initialisierung ADC -------- 
 
     main_id = thread_getpid();
@@ -423,9 +448,7 @@ bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
 
     //-------- Ende Initialisierung ADC --------
 
-    //-------- Beginn Initialisierung Temperatur Sensor --------
-
-    
+    //-------- Beginn Initialisierung Temperatur Sensor --------    
 
     puts("MPL3115A2 pressure sensor driver test application\n");
     printf("Initializing MPL3115A2 sensor at I2C_%i... ", TEST_MPL3115A2_I2C);
@@ -456,9 +479,12 @@ bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
     
 
     //-------- Ende Initialisierung Feuchtigkeits Sensor --------
+    //-------- Beginn Initialisierung Servo --------
 
     puts("\n");
-    
+
+
+    #ifdef IN    
     puts("\nRIOT RC servo test");
     puts("Connect an RC servo or scope to PWM_0 channel 0 to see anything");
     res = servo_init(&servo, DEV, CHANNEL, SERVO_MIN, SERVO_MAX);
@@ -467,9 +493,11 @@ bool initAll(mpl3115a2_t *mplDevice,hdc1000_t *hdcDevice){
         return false;
     }
     puts("Servo initialized.");
+    #endif
+
+    //-------- Ende Initialisierung Servo --------
 
     sw_network_init();
-
 
     return true;
 }
