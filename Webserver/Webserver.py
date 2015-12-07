@@ -4,7 +4,7 @@ from flask import request
 import MySQLdb
 
 
-connection = MySQLdb.connect("raspberrypi","root","1234","SmartWindow")
+connection = MySQLdb.connect("localhost","root","1234","SmartWindow")
 
 cursor = connection.cursor()
 
@@ -177,4 +177,4 @@ def auto():
 
 
 if __name__ == "__main__":
-    app.run(host='192.168.0.3', port=80)
+    app.run(host='192.168.0.5', port=80)
