@@ -76,6 +76,12 @@ Create table SmartWindow.ManClose(
     Zeitstempel	timestamp unique not null,
     Wert		bool not null);
     
+-- Signal, dass die Limits sich geändert haben 0: keine neuen Änderungen 1: neue Änderungen
+Create table SmartWindow.LimitChange(
+	ID			INT primary key	Auto_increment,
+    Zeitstempel	timestamp unique not null,
+    Wert		bool not null);			
+    
     
 	-- Werte der Sensoren
     
