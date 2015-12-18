@@ -129,7 +129,6 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/sixlowpan.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/sixlowpan/netif.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/net/gnrc/network_layer/sixlowpan/frag/rbuf.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/thread.h
 
@@ -390,8 +389,6 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/sixlowpan/netif.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/net/gnrc/network_layer/sixlowpan/frag/rbuf.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h:
 

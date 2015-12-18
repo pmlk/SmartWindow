@@ -122,7 +122,18 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/attributes.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_internal.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/uart_stdio.h
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/uart_stdio.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/div.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/assert.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/panic.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/errno.h:
 
@@ -369,3 +380,25 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/uart_stdio.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/div.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/assert.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/panic.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:

@@ -124,7 +124,8 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdio.h:
 
@@ -375,3 +376,5 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:

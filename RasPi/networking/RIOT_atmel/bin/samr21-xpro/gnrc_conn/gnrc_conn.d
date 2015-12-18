@@ -166,6 +166,7 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/udp.h
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/conn.h:
@@ -499,5 +500,7 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/udp.h:

@@ -109,6 +109,7 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/thread.h
 
@@ -329,6 +330,8 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h:
 

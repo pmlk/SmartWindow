@@ -138,8 +138,9 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/spi.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/at86rf2xx.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/at86rf2xx_params.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/at86rf2xx/include/at86rf2xx_params.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/thread.h
 
@@ -419,9 +420,11 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h:
 
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
+
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/at86rf2xx.h:
 
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/at86rf2xx_params.h:
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/at86rf2xx/include/at86rf2xx_params.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h:
 

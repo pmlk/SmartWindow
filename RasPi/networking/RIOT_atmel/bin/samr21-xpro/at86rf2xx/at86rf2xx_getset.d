@@ -90,6 +90,7 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/spi.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/netdev.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/errno.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/errno.h \
@@ -309,6 +310,8 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/netdev.h:
 

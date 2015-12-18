@@ -143,22 +143,15 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ipv6/nc.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/eui64.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/pktqueue.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/board.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ipv6/netif.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_macros.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/mutex.h \
@@ -168,6 +161,14 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/ipv6/ext.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/ipv6/ext/rh.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/ipv6/hdr.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ndp/host.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ndp/internal.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ndp/router.h \
@@ -473,13 +474,9 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/pktqueue.h:
 
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h:
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h:
 
@@ -489,21 +486,11 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
 
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
+
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/board.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ipv6/netif.h:
 
@@ -522,6 +509,22 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/ipv6/ext/rh.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/ipv6/hdr.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/net/gnrc/ndp/host.h:
 
