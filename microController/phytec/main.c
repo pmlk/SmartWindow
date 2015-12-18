@@ -346,15 +346,19 @@ int main(void)
     }
     while (1) {
             
-            
+            #ifdef IN 
             if(!b_windowIsDriving){
                 mutex_lock(&mtx);
                 msg_receive(&msg);
                 communicationCommand = msg.content.value;
                 mutex_unlock(&mtx);
             }
-            
-            
+            #else
+                mutex_lock(&mtx);
+                msg_receive(&msg);
+                communicationCommand = msg.content.value;
+                mutex_unlock(&mtx);    
+            #endif
                
         switch(communicationCommand){
             case START_MEASUREMENT:
