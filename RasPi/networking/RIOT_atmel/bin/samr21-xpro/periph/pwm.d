@@ -89,8 +89,10 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/board.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/pwm.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/pwm.h
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h:
 
@@ -270,6 +272,10 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h:
 
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/pwm.h:
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/gpio.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/pwm.h:

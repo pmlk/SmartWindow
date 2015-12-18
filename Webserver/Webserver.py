@@ -4,7 +4,7 @@ from flask import request
 import MySQLdb
 
 
-connection = MySQLdb.connect("raspberrypi","root","1234","SmartWindow")
+connection = MySQLdb.connect("localhost","root","1234","SmartWindow")
 
 cursor = connection.cursor()
 
@@ -31,11 +31,22 @@ def Main():
     InQual = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM AirQuality_OUT WHERE ID=(SELECT Max(ID) FROM AirQuality_OUT)")
     OutQual = (cursor.fetchone())[0]
+    cursor.execute("SELECT Wert FROM Win_Open WHERE ID=(SELECT Max(ID) FROM Win_Open)")
+        if (cursor.fetchone())[0]:
+            StateWindow = "opend"
+            ManOpen = "disabled"
+            ManClose = " "
+        else:
+            StateWindow = "closed"
+            ManOpen = " "
+            ManClose = "disabled"
     cursor.execute("SELECT Wert FROM AutoModus WHERE ID=(SELECT Max(ID) FROM AutoModus)")
     if (cursor.fetchone())[0]:
         Modus = "automatic"
         Manu = " "
         Auto = "disabled"
+        ManOpen = "disabled"
+        ManClose = "disabled"
     else:
         Modus = "manuel"
         Manu = "disabled"
@@ -46,21 +57,13 @@ def Main():
     OutHum = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Temp_IN WHERE ID=(SELECT Max(ID) FROM Temp_IN)")
     InTemp = (cursor.fetchone())[0]
-    cursor.execute("SELECT Wert FROM Temp_OUT WHERE ID=(SELECT Max(ID) FROM Temp_Out)")
+    cursor.execute("SELECT Wert FROM Temp_OUT WHERE ID=(SELECT Max(ID) FROM Temp_OUT)")
     OutTemp = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Volume_IN WHERE ID=(SELECT Max(ID) FROM Volume_IN)")
     InSound = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Volume_OUT WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
     OutSound = (cursor.fetchone())[0]
-    cursor.execute("SELECT Wert FROM Win_Open WHERE ID=(SELECT Max(ID) FROM Win_Open)")
-    if (cursor.fetchone())[0]:
-        StateWindow = "opend"
-        ManOpen = "disabled"
-        ManClose = " "
-    else:
-        StateWindow = "closed"
-        ManOpen = " "
-        ManClose = "disabled"
+
     return render_template('Main.html', Modus=Modus, StateWindow=StateWindow, ManOpen=ManOpen, ManClose=ManClose, Manu = Manu, Auto = Auto, OutTemp=OutTemp, InTemp=InTemp, OutHum=OutHum, InHum=InHum, InQual=InQual, OutQual=OutQual, InPres=InPres, OutPres=OutPres, InSound=InSound, OutSound=OutSound)
 
 
@@ -118,6 +121,7 @@ def submit():
     cursor.execute(Ins + "AirQuality_MAX" + Val + MaxQual +")")
     cursor.execute(Ins + "AirPressure_MAX" + Val + MaxPres +")")
     cursor.execute(Ins + "Volume_MAX" + Val + MaxSound +")")
+    cursor.execute(Ins + "LimitChange" + Val + "1)")
     connection.commit()
     return LimitsText()
 
@@ -137,6 +141,7 @@ def reset():
     cursor.execute(Ins + "AirQuality_MAX" + Val + MaxQual +")")
     cursor.execute(Ins + "AirPressure_MAX" + Val + MaxPres +")")
     cursor.execute(Ins + "Volume_MAX" + Val + MaxSound +")")
+    cursor.execute(Ins + "LimitChange" + Val + "1)")
     connection.commit()
     return LimitsText()
 
@@ -177,4 +182,4 @@ def auto():
 
 
 if __name__ == "__main__":
-    app.run(host='192.168.0.3', port=80)
+    app.run(host='169.254.91.29', port=80)

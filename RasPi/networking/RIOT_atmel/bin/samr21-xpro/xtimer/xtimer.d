@@ -120,6 +120,7 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/arch/thread_arch.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/attributes.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_internal.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/div.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/debug.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/thread.h
@@ -363,6 +364,8 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/attributes.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_internal.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/div.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
 

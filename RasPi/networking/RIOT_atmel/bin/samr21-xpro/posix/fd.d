@@ -26,7 +26,9 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/alloca.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/string.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/string.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/posix_io.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/unistd.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/unistd.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/fd.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_types.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdint.h \
@@ -35,16 +37,6 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include-fixed/limits.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include-fixed/syslimits.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/limits.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/posix/include/unistd.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_types.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/cortexm_common/include/cpu.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/cpu_conf.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/samd21.h \
@@ -104,18 +96,8 @@
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/instance/instance_wdt.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/pio/pio_samr21g18a.h \
  /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/irq.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/arch/irq_arch.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/board.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h \
- /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/fd.h
+ /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
+ /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/arch/irq_arch.h
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/errno.h:
 
@@ -169,7 +151,11 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/string.h:
 
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/posix_io.h:
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/unistd.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/unistd.h:
+
+/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/fd.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_types.h:
 
@@ -186,26 +172,6 @@
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include-fixed/syslimits.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/limits.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/posix/include/unistd.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/vtimer.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/msg.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/kernel_types.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/timex.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/xtimer.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/timer.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/samd21/include/periph_cpu.h:
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/cpu/cortexm_common/include/cpu.h:
 
@@ -325,26 +291,6 @@
 
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/irq.h:
 
+/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
+
 /Users/Patrick/Documents/Programmieren/SmartUni/RIOT/core/include/arch/irq_arch.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/drivers/include/periph/dev_enums.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/board.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/boards/samr21-xpro/include/periph_conf.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/timespec.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timespec.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/time.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_timeval.h:
-
-/Users/Patrick/Documents/Programmieren/SmartUni/RIOT/sys/include/fd.h:
