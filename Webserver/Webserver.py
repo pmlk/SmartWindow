@@ -23,6 +23,7 @@ def Links():
 
 @app.route("/main")
 def Main():
+    connection.commit()
     cursor.execute("SELECT Wert FROM AirPressure_IN WHERE ID=(SELECT Max(ID) FROM AirPressure_IN)")
     InPres = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM AirPressure_OUT WHERE ID=(SELECT Max(ID) FROM AirPressure_OUT)")
