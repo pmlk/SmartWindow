@@ -46,6 +46,8 @@
 #include "mutex.h"
 #include "sendReceive.h"
 
+
+
 #define IN
 
 #ifdef IN
@@ -209,6 +211,7 @@ void *communication_thread(void *arg)
         
         socklen_t src_len = sizeof(struct sockaddr_in6);
         
+
         // blocking receive, waiting for data
         if ((res = recvfrom(pp_socket, pp_buffer, sizeof(pp_buffer), 0,
                             (struct sockaddr *)&src, &src_len)) < 0) {
@@ -244,6 +247,7 @@ void *communication_thread(void *arg)
             msg_send(&msg, main_id);
             msg_receive(&msg);
             communicationCommand = msg.content.value;
+
             switch(communicationCommand){
                 case START_MEASUREMENT:
 
@@ -259,23 +263,28 @@ void *communication_thread(void *arg)
                 case FINISH_MEASUREMENT:
                     //temperature 
                     sprintf(valueString, "%f", (float)(data.temperature) / 10);
-                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    sendString(sendBuffer, SENS_TEMP, valueString);
+                    printf("sendBuffer = %s\n", sendBuffer); 
                     pp_send(src_addr_str, sendBuffer);
                     //pressure
                     sprintf(valueString, "%d", (int)(data.pressure));
-                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    sendString(sendBuffer, SENS_AIR_PRESSURE, valueString);
+                    printf("sendBuffer = %s\n", sendBuffer); 
                     pp_send(src_addr_str, sendBuffer);
                     // volume
                     sprintf(valueString, "%f", (float)(data.volume) / 100);
-                    sendString(sendBuffer, SENS_TEMP, valueString); 
+                    sendString(sendBuffer, SENS_VOLUME, valueString);
+                    printf("sendBuffer = %s\n", sendBuffer); 
                     pp_send(src_addr_str, sendBuffer);
                     // humidity
                     sprintf(valueString, "%f", (float)(data.humidity) / 100); 
-                    sendString(sendBuffer, SENS_TEMP, valueString);
+                    sendString(sendBuffer, SENS_HUMIDITY, valueString);
+                    printf("sendBuffer = %s\n", sendBuffer);
                     pp_send(src_addr_str, sendBuffer);
                     // airQuality
                     sprintf(valueString, "%f", (float)(data.airQuality) / 100); 
-                    sendString(sendBuffer, SENS_TEMP, valueString);
+                    sendString(sendBuffer, SENS_AIR_QUALITY, valueString);
+                    printf("sendBuffer = %s\n", sendBuffer);
                     pp_send(src_addr_str, sendBuffer);
                 break;
                 #ifdef IN
@@ -321,6 +330,7 @@ int main(void)
     int pos = (STEP_LOWER_BOUND + STEP_UPPER_BOUND) / 2;
     int step = STEP;
     bool b_openWindow = true;
+    bool b_windowIsDriving = false;
     #endif
     int communication_thread_id = 0;
     int communicationCommand;
@@ -335,11 +345,17 @@ int main(void)
         return 0;
     }
     while (1) {
-        mutex_lock(&mtx);
-        msg_receive(&msg);
-        communicationCommand = msg.content.value;
-        mutex_unlock(&mtx);
-
+            
+            
+            if(!b_windowIsDriving){
+                mutex_lock(&mtx);
+                msg_receive(&msg);
+                communicationCommand = msg.content.value;
+                mutex_unlock(&mtx);
+            }
+            
+            
+               
         switch(communicationCommand){
             case START_MEASUREMENT:
                 mutex_lock(&mtx);
@@ -354,35 +370,46 @@ int main(void)
             break;
             #ifdef IN
             case START_OPEN_WINDOW:
-                if(b_openWindow){
+                if(b_openWindow){                    
+                    b_windowIsDriving = true;
                     if(openWindow(&servo, &pos, step)){
-                        b_openWindow = false;                        
+                        b_openWindow = false;
+                        
+                        printf("Fenster offen!\n");
+                        communicationCommand = FINISH_OPEN_WINDOW;
+
+                        mutex_lock(&mtx);
+                        msg.content.value = communicationCommand;
+                        msg_send(&msg, communication_thread_id);
+                        mutex_unlock(&mtx);
+                        b_windowIsDriving = false;                        
                     }
                 
                 }
                 else{
-                    communicationCommand = FINISH_OPEN_WINDOW;
-
-                    mutex_lock(&mtx);
-                    msg.content.value = communicationCommand;
-                    msg_send(&msg, communication_thread_id);
-                    mutex_unlock(&mtx);
+                  
                 }
        
             break;
             case START_CLOSE_WINDOW:
                 if(!b_openWindow) {
+                    b_windowIsDriving = true;
                     if(closeWindow(&servo, &pos, step*2)){
                         b_openWindow = true;
+                        b_windowIsDriving = false;
+                        printf("Fenster geschlossen!\n");
+                        communicationCommand = FINISH_CLOSE_WINDOW;
+
+                        mutex_lock(&mtx);
+                        msg.content.value = communicationCommand;
+                        msg_send(&msg, communication_thread_id);
+                        mutex_unlock(&mtx);
+                        b_windowIsDriving = false;
+                    
+
                     }
                 }
                 else{
-                    communicationCommand = FINISH_CLOSE_WINDOW;
-
-                    mutex_lock(&mtx);
-                    msg.content.value = communicationCommand;
-                    msg_send(&msg, communication_thread_id);
-                    mutex_unlock(&mtx);
                 }
             break;
             #endif
@@ -594,13 +621,13 @@ int getAirQuality(void){
 void sendString(char* sendBuffer, char* sensor, char* value){
     
     strcpy(sendBuffer, "PUT_");
-    strcmp(sendBuffer, sensor);
+    strcat(sendBuffer, sensor);
     /*Abfrage welcher Sensorknoten man selber ist*/
     #ifdef IN
-        strcmp(sendBuffer, "_IN");
+        strcat(sendBuffer, "_IN");
     #else
-        strcmp(sendBuffer, "_OUT");
+        strcat(sendBuffer, "_OUT");
     #endif
-    strcmp(sendBuffer, "/");
-    strcmp(sendBuffer, value);
+    strcat(sendBuffer, "/");
+    strcat(sendBuffer, value);
 }
