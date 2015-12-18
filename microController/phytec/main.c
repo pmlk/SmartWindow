@@ -257,9 +257,10 @@ void *communication_thread(void *arg)
 
                 break;
                 case START_CLOSE_WINDOW:
-                #endif
+                
 
                 break;
+                #endif
                 case FINISH_MEASUREMENT:
                     //temperature 
                     sprintf(valueString, "%f", (float)(data.temperature) / 10);
