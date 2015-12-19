@@ -42,3 +42,4 @@ logic|c++ program|RasPi
 network|c/c++ programs|RasPi/Phytec
 physical|c program|Phytec
 
+![architecture](https://raw.githubusercontent.com/smartuni/SmartWindow/master/Doc/sw_architecture.png)
