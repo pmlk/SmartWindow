@@ -39,7 +39,7 @@ Layer | Software | Hardware
 Presentation|HTML|RasPi
 Application|Python Webserver|RasPi
 Data Storage|MySQL Database|RasPi
-Logic|Window Wontroller (C++)|RasPi
+Logic|Window Controller (C++)|RasPi
 Network|C/C++ programs|RasPi/Phytec
 Physical|C program|Phytec/Sensors
 
