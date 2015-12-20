@@ -36,12 +36,12 @@ This is not strictly following the OSI model.
 
 Layer | Software | Hardware
 ------|----------|---------
-presentation|html|RasPi
-application|python webserver|RasPi
-data storage|MySQL Database|RasPi
-logic|window controller (c++)|RasPi
-network|c/c++ programs|RasPi/Phytec
-physical|c program|Phytec
+Presentation|HTML|RasPi
+Application|Python Webserver|RasPi
+Data Storage|MySQL Database|RasPi
+Logic|Window Wontroller (C++)|RasPi
+Network|C/C++ programs|RasPi/Phytec
+Physical|C program|Phytec/Sensors
 
 <img src="https://raw.githubusercontent.com/smartuni/SmartWindow/master/Doc/sw_architecture.png" alt="architecture" height="500">
 
