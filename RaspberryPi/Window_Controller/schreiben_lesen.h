@@ -22,8 +22,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <mysql/mysql.h>
-#include "mysql/headers/mysql.h"
+#include <mysql/mysql.h>
+//#include "mysql/headers/mysql.h"
 #include <string.h>
 #include <time.h>
 

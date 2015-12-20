@@ -38,7 +38,11 @@
 //
 #include "SmartWindowMacros.h"
 #include "schreiben_lesen.h"
-#include "mysql/headers/mysql.h"
+// when Cross-Compiling
+//#include "mysql/headers/mysql.h"
+// when compiling on RasPi
+#include <mysql/mysql.h>
+
 
 // from RIOT:
 // http://riot-os.org/api/group__net__ipv6__addr.html#ga2713917d7f8462406ab96eb14f1bfa2c
