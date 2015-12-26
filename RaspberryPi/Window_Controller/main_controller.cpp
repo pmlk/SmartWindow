@@ -288,8 +288,26 @@ void *decisionLoop(void* args)
 	double vol_in, vol_out, vol_max;					// volume (street noise)
 	double win_open_bo;									// windows status (bool)
 
+	// Implementation Grenzwerte.png
+	double airQ_temp, airQ_temp2;
+	double temp_average;
+	double humid_average;
+	bool airQ_alarm;									// air quality alarm
+	bool temp_alarm;									// temperature alarm
+	bool humid_alarm;									// humidity alarm
+	bool vol_alarm;
+
+	// Implementation State Machine
+	bool init = true;
+	bool state1 = false;
+	bool state2 = false;
+	bool state3 = false;
+	bool state4 = false;
+
+
 	// start while(1)
 	// periodically read data from DB
+	while(1) {
 
 	// Auto/Manual
 	autoMode_bo = daten_suchen(mysql,DB_NAME,TBL_AUTO, messdaten);
@@ -314,38 +332,125 @@ void *decisionLoop(void* args)
 	humid_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), messdaten);
 	humid_min = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), messdaten);
 	humid_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), messdaten);
+	humid_average = (((humid_max - humid_min) / 2) + humid_min);
 	// Temperature
 	temp_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), messdaten);
 	temp_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), messdaten);
 	temp_min = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), messdaten);
 	temp_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), messdaten);
-	//Volume
+	temp_average = ((temp_max -temp_min) / 2) + temp_min;
+	// Volume
 	vol_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), messdaten);
 	vol_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), messdaten);
 	vol_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), messdaten);
 
-	// IF MANUAL MODE
+	
+	// Implementation of Grenzwerte.png
+	// Air Quality Alarm
+	if (((airQ_out + airQ_in) / 2) > airQ_max)
+	{
+		airQ_alarm = true;
+	}
+	if (((airQ_out + airQ_in) / 2) == (airQ_max - 2))
+	{
+		airQ_alarm = false; 	
+	}
 
-	// check status
+	// Temperature Alarm
+	if (((temp_in < temp_min) && (temp_in < temp_out)) || ((temp_in > temp_max) && (temp_in > temp_out)))
+	{
+		temp_alarm = true;
+	}
+	if (temp_in == temp_average)
+	{
+		temp_alarm = false;
+	}
 
-	// open
+	// Humidity Alarm
+	if (((humid_in < humid_min) && (humid_in < humid_out)) || ((humid_in > humid_max) && (humid_in > humid_out)))
+	{
+		humid_alarm = true;
+	}
+	if (humid_in == humid_average)
+	{
+		humid_alarm = false;
+	}
 
-	// close
+	// Volume Alarm
+	if ((vol_in > vol_max) && (vol_in > vol_out))
+	{
+		vol_alarm = true;
+	}
+	if (vol_in < vol_max)
+	{
+		vol_alarm = false;
+	}
 
-	// do nothing
+	// Initialize
+	// At the beginning the Window will always be closed
+	if (init && !win_open_bo && !state1)
+	{
+		init = false;
+	} else {
+		state1 = true;
+	}
 
+	// State 1
+	// Windows is closed and waiting on Commands
+	if (state1 && !state2 && ((!autoMode_bo && manOpen_bo) || (manOpen_bo && (airQ_alarm && temp_alarm && humid_alarm))))
+	{
+		state1 = false;
+	} else {
+		state2 = true;
+	}
 
-	// ELSE AUTO MODE
+	// State 2
+	// Open Window till it is open
+	if (state2 && !state3 && win_open_bo)
+	{
+		state2 = false;
+	} else {
+		state3 = true;
+	}
 
-	// make decision
+	// State 3
+	// Window is opened and waiting on commands
+	if (state3 && !state4 && ((!autoMode_bo && manClose_bo) || (autoMode_bo && (vol_alarm || (!humid_alarm && airQ_alarm && temp_alarm)))))
+	{
+		state3 = false;
+	} else {
+		state4 = true;
+	}
 
-	// open or close
+	// State 4
+	// Close Window till it is closed
+	if (state4 && !state1 && !win_open_bo)
+	{
+		state4 = false;
+	} else {
+		state1 = true;
+	}
 
-	// end while(1)
+	// Assignments
+	if (init)
+	{
+		sw_send(DST_MULITCAST, "PUT_Win/Close");
+		sleep(5);
+	}
 
-//	sw_send(DST_MULITCAST, "PUT_Win/Close");
-/* *
+	if(state2)
+	{
+		sw_send(DST_MULITCAST, "PUT_Win/Open");
+		sleep(5);
+	}
 
+	if (state4)
+	{
+		sw_send(DST_MULITCAST, "PUT_Win/Close");
+		sleep(5);
+	}
+
+/*
 	while(1)
 	{
 		sw_send(DST_MULITCAST, "PUT_Win/Open");
@@ -354,7 +459,7 @@ void *decisionLoop(void* args)
 		sw_send(DST_MULITCAST, "PUT_Win/Close");
 		sleep(5);
 	}
-/**/
+*/
 
  return NULL;
 }
