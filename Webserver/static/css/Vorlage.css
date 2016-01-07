@@ -1,3 +1,19 @@
+<!--
+Structure Model
+
+created: 09.10.2015
+Autor: Mailina Lohmann
+Content: Structure mode for all html datas
+         defines background and text
+         defines colors, form and sizes
+         defines page structure
+
+Rev: 0.0 - 09.10.2015 first creation
+     1.0 - 18.12.2015 comment adjustment
+-->
+
+
+   <!-- used for text form -->
 h1 {
    font-family:'Alegreya', serif;
    font-size: 3.4em;
@@ -22,7 +38,8 @@ h3 {
 
 body{
    background-color:#475656;
-    font-family: 'Calibri';
+   font-family: 'Calibri';
+   color:#FFFFFF;
    }
 
 a:link {
@@ -55,6 +72,8 @@ a:active {
    font-size: 14pt;
    }
 
+
+   <!-- used for page structure -->
 #left {
    position: absolute;
    padding: 1;
@@ -72,11 +91,4 @@ a:active {
    position: absolute;
    padding: 1;
    right: 0;
-  }
-
-#Switch{
-   position: absolute;
-   padding: 1;
-   border: 1;
-   left: 3;
   }

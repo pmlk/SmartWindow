@@ -1,0 +1,27 @@
+<!--
+Discription Construction HTML
+
+created: 09.10.2015
+Autor: Mailina Lohmann
+Content:   Frame for the Page with Discription
+
+Rev: 0.0 - 09.10.2015 first creation
+     1.0 - 18.12.2015 comment adjustment
+-->
+
+<html>
+ <head>
+    <title>SmartWindow</title>
+    <meta name="author" content="Mailina">
+    <meta name="editor" content="html-editor phase 5">
+ </head>
+ <!--- setting the frame to one over the total height but only 275px wide on the top -->
+ <frameset rows="*" cols="275px,*" frameborder="0" border="1" framespacing="0">
+    <frame name="links" src="/links">              <!-- opening the Links HTML -->
+    <!--- splitting the rest over the total width in one 155px high and one with the rest-->
+    <frameset rows="155px,*" frameborder="0" border="1" framespacing="0">
+       <frame name="oben" src="/titel">            <!-- opening the Titel HTML -->
+       <frame name="main" src="/discriptionText">  <!-- opening the Discription HTML -->
+    </frameset>
+ </frameset>
+</html>

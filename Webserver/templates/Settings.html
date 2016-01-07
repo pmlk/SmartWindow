@@ -1,0 +1,106 @@
+<!--
+Settings HTML
+
+created: 09.10.2015
+Autor: Mailina Lohmann
+Content:  Content for page "Settings"
+          Page to Change Priority or Limits 
+
+Rev: 0.0 - 09.10.2015 first creation
+     1.0 - 18.12.2015 comment adjustment
+-->
+
+<html>
+ <head>
+    <title>Settings</title>
+    <meta name="author" content="Mailina">
+    <meta name="editor" content="html-editor phase 5">
+    <link rel="stylesheet" href="/static/css/Vorlage.css" type="text/css">
+ </head>
+
+ <body text="#FFFFFF" bgcolor="#408080" link="#FF0000" alink="#FF0000" vlink="#FF0000">
+  <h2>Settings</h2>
+    <!--- method 'post' for transmitting values by using the submit button -->
+  <form method="post" action="{{ url_for('submit') }}">
+
+    <!--- table with drop down menu for priority -->
+    <table>
+       <col style="width:200px"> <col style="width:200px">
+       <tr>
+          <td></td>
+          <td>Priority on</td>
+          <td>
+             <select name="Priority">
+                <option value="3" {{ prio3 }}>All three</option>
+                <option value="2" {{ prio2 }}>Air Quality</option>
+                <option value="1" {{ prio1 }}>Temperature</option>
+                <option value="0" {{ prio0 }}>Humidity</option>
+             </select>
+          </td>
+       </tr>
+    </table>
+
+    </br>
+    </br>
+
+     <!--- table with every Limit Value -->
+    <table>
+       <col style="width:200px"> <col style="width:200px"><col style="width:120px">
+       <tr>
+           <td></td>
+           <td>Minimum Temperature</td>
+           <td><input type="number" name="MinTemp" value="{{ MinTemp }}" step="1" style="text-align: right; width: 50px"> &deg;C   </br></td>
+           </tr>
+
+           <tr>
+           <td></td>
+           <td>Maximum Temperature</td>
+           <td><input type="number" name="MaxTemp" value="{{ MaxTemp }}" step="1" style="text-align: right; width: 50px"> &deg;C   </br></td>
+           </tr>
+
+           <tr>
+           <td></td>
+           <td>Minimum Humidity</td>
+           <td><input type="number" name="MinHum" value="{{ MinHum }}" step="1" style="text-align: right; width: 50px"> %   </br></td>
+           </tr>
+
+       <tr>
+           <td></td>
+           <td>Maximum Humidity</td>
+           <td><input type="number" name="MaxHum" value="{{ MaxHum }}" step="1" style="text-align: right; width: 50px"> %   </br></td>
+       </tr>
+
+       <tr>
+           <td></td>
+           <td>Maximum Air Quality   </td>
+           <td><input type="number" name="MaxCO2" value="{{ MaxQual }}" step="1" style="text-align: right; width: 50px"> Vol. %   </br></td>
+       </tr>
+
+       <tr>
+           <td></td>
+           <td>Maximum Wind  </td>
+           <td><input type="number" name="MaxPres" value="{{ MaxPres }}" step="1" style="text-align: right; width: 50px"> m/s   </br></td>
+       </tr>
+
+       <tr>
+           <td></td>
+           <td>Maximum Noise  </td>
+           <td><input type="number" name="MaxNoise" value="{{ MaxSound }}" step="1" style="text-align: right; width: 50px"> dB   </br></td>
+       </tr>
+    </table>
+
+    </br>
+    </br>
+
+    <!--- table for the buttons -->
+    <table>
+       <col style="width:200px"> <col style="width:200px">
+       <tr>
+           <td></td>
+           <td><input type="submit" value="SUBMIT"></td>
+           <td><input type="button"  onclick="window.location.href='/reset'" value="RESET"></td>
+       </tr>
+    </table>
+  </form>
+ </body>
+</html>
