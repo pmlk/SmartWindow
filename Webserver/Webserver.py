@@ -96,8 +96,63 @@ def Main():
         Priority = "Temperature"
     elif (Prio==0):
         Priority = "Humidity"
+    cursor.execute("SELECT Wert FROM Air_Quality_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    AirQualityAlarm = (cursor.fetchone())[0]
+    if (AirQualityAlarm == 2):   # Displaying Alarmstate of Air Quality in words with color
+        AirQualityAlarmState = "Alarm"
+        AirColor = "#B22222"
+    elif (AirQualityAlarm == 1):
+        AirQualityAlarmState = "Warning"
+        AirColor = "#CD6839"
+    elif (AirQualityAlarm == 0):
+        AirQualityAlarmState = "OK"
+        AirColor = "#228B22"
+    cursor.execute("SELECT Wert FROM Temp_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    TempAlarm = (cursor.fetchone())[0]
+    if (TempAlarm == 2):          # Displaying Alarmstate of Temperature in words with color
+        TempAlarmState = "Alarm"
+        TempColor = "#B22222"
+    elif (TempAlarm == 1):
+        TempAlarmState = "Warning"
+        TempColor = "#CD6839"
+    elif (TempAlarm == 0):
+        TempAlarmState = "OK"
+        TempColor = "#228B22"
+    cursor.execute("SELECT Wert FROM Humidity_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    HumidityAlarm = (cursor.fetchone())[0]
+    if (HumidityAlarm == 2):      # Displaying Alarmstate of Humidity in words with color
+        HumidityAlarmState = "Alarm"
+        HumidityColor = "#B22222"
+    elif (HumidityAlarm == 1):
+        HumidityAlarmState = "Warning"
+        HumidityColor = "#CD6839"
+    elif (HumidityAlarm == 0):
+        HumidityAlarmState = "OK"
+        HumidityColor = "#228B22"
+    cursor.execute("SELECT Wert FROM Noise_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    NoiseAlarm = (cursor.fetchone())[0]
+    if (NoiseAlarm == 2):        # Displaying Alarmstate of Noise in words with color
+        NoiseAlarmState = "Alarm"
+        NoiseColor = "#B22222"
+    elif (NoiseAlarm == 2):
+        NoiseAlarmState = "Warning"
+        NoiseColor = "#CD6839"
+    elif (NoiseAlarm == 2):
+        NoiseAlarmState = "OK"
+        NoiseColor = "#228B22"
+    cursor.execute("SELECT Wert FROM Wind_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    WindAlarm = (cursor.fetchone())[0]
+    if (WindAlarm == 2):         # Displaying Alarmstate of Wind in words with color
+        WindAlarmState = "Alarm"
+        WindColor = "#B22222"
+    elif (WindAlarm == 2):
+        WindAlarmState = "Warning"
+        WindColor = "#CD6839"
+    elif (WindAlarm == 2):
+        WindAlarmState = "OK"
+        WindColor = "#228B22"
     # execute the HTML file with the values of the database
-    return render_template('Home.html', Modus=Modus, StateWindow=StateWindow, ManOpen=ManOpen, ManClose=ManClose, Manu = Manu, Auto = Auto, OutTemp=OutTemp, InTemp=InTemp, OutHum=OutHum, InHum=InHum, InQual=InQual, OutQual=OutQual, InPres=InPres, OutPres=OutPres, InSound=InSound, OutSound=OutSound, Priority = Priority)
+    return render_template('Home.html', Modus=Modus, StateWindow=StateWindow, ManOpen=ManOpen, ManClose=ManClose, Manu = Manu, Auto = Auto, OutTemp=OutTemp, InTemp=InTemp, OutHum=OutHum, InHum=InHum, InQual=InQual, OutQual=OutQual, InPres=InPres, OutPres=OutPres, InSound=InSound, OutSound=OutSound, Priority = Priority, AirQualityAlarmState = AirQualityAlarmState, AirColor = AirColor, TempAlarmState = TempAlarmState, TempColor = TempColor, HumidityAlarmState = HumidityAlarmState, HumidityColor = HumidityColor, NoiseAlarmState = NoiseAlarmState, NoiseColor = NoiseColor, WindAlarmState = WindAlarmState, WindColor = WindColor)
 
 # Bottom 'AUTOMATIC'
 @app.route("/auto")

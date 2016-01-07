@@ -19,7 +19,7 @@ Rev: 0.0 - 09.10.2015 first creation
      <link rel="stylesheet" href="/static/css/Vorlage.css" type="text/css">
  </head>
 
- <body text="#FFFFFF" bgcolor="222222">
+ <body text="#FFFFFF" bgcolor="#475656">
      <h2>Home</h2>
 
      <!--- table with current mode -->
@@ -150,7 +150,45 @@ Rev: 0.0 - 09.10.2015 first creation
             <td style="text-align: right">{{ OutSound }}</td>
             <td> dB   </br></td>
          </tr>
+     </table>
 
+     </br>
+     </br>
+
+
+
+     <!--- table with current alarm values-->
+     <table>
+         <col style="width:200px"> <col style="width:200px"><col style="width:50px">
+         <tr>
+            <td></td>
+            <td><b>Air Quality Alarm</b></td>
+            <td style="text-align: right"><font color="{{ AirColor }}">{{ AirQualityAlarmState }}</font></td>
+         </tr>
+
+         <tr>
+            <td></td>
+            <td><b>Temperature Alarm</b></td>
+            <td style="text-align: right"><font color="{{ TempColor }}">{{ TempAlarmState }}</font></td>
+         </tr>
+
+         <tr>
+            <td></td>
+            <td><b>Humidity Alarm</b></td>
+            <td style="text-align: right"><font color="{{ HumidityColor }}">{{ HumidityAlarmState }}</font></td>
+         </tr>
+
+         <tr>
+            <td></td>
+            <td><b>Noise Alarm</b></td>
+            <td style="text-align: right"><font color="{{ NoiseColor }}">{{ NoiseAlarmState }}</font></td>
+         </tr>
+
+         <tr>
+            <td></td>
+            <td><b>Wind Alarm</b></td>
+            <td style="text-align: right"><font color="{{ WindColor }}">{{ WindAlarmState }}</font></td>
+         </tr>
      </table>
 
      </br>
