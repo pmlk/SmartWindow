@@ -4,7 +4,7 @@ Settings HTML
 created: 09.10.2015
 Autor: Mailina Lohmann
 Content:  Content for page "Settings"
-          Page to Change Priority or Limits 
+          Page to Change Priority or Limits
 
 Rev: 0.0 - 09.10.2015 first creation
      1.0 - 18.12.2015 comment adjustment
@@ -36,6 +36,19 @@ Rev: 0.0 - 09.10.2015 first creation
                 <option value="1" {{ prio1 }}>Temperature</option>
                 <option value="0" {{ prio0 }}>Humidity</option>
              </select>
+          </td>
+       </tr>
+    </table>
+
+    </br>
+
+    <table>
+       <col style="width:200px"> <col style="width:200px">
+       <tr>
+          <td></td>
+          <td><font color=#CD6839><b>Warning!</b></font></td>
+          <td>
+             If you chose 'All three', it is possible that the window will be locked open.
           </td>
        </tr>
     </table>
@@ -79,7 +92,7 @@ Rev: 0.0 - 09.10.2015 first creation
        <tr>
            <td></td>
            <td>Maximum Wind  </td>
-           <td><input type="number" name="MaxPres" value="{{ MaxPres }}" step="1" style="text-align: right; width: 50px"> m/s   </br></td>
+           <td><input type="number" name="MaxWind" value="{{ MaxWind }}" step="1" style="text-align: right; width: 50px"> m/s   </br></td>
        </tr>
 
        <tr>

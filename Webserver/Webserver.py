@@ -86,7 +86,7 @@ def Main():
     InSound = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Volume_OUT WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
     OutSound = (cursor.fetchone())[0]
-    cursor.execute("SELECT Wert FROM Priority WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    cursor.execute("SELECT Wert FROM Priority WHERE ID=(SELECT Max(ID) FROM Priority)")
     Prio = (cursor.fetchone())[0]
     if (Prio==3):                # Displaying priority in words
         Priority = "Air Quality, Temperature and Humidity"
@@ -96,61 +96,61 @@ def Main():
         Priority = "Temperature"
     elif (Prio==0):
         Priority = "Humidity"
-    cursor.execute("SELECT Wert FROM Air_Quality_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+    cursor.execute("SELECT Wert FROM Air_Quality_AlarmState WHERE ID=(SELECT Max(ID) FROM Air_Quality_AlarmState)")
     AirQualityAlarm = (cursor.fetchone())[0]
     if (AirQualityAlarm == 2):   # Displaying Alarmstate of Air Quality in words with color
         AirQualityAlarmState = "Alarm"
-        AirColor = "#B22222"
+        AirColor = "B22222"
     elif (AirQualityAlarm == 1):
         AirQualityAlarmState = "Warning"
-        AirColor = "#CD6839"
+        AirColor = "CD6839"
     elif (AirQualityAlarm == 0):
         AirQualityAlarmState = "OK"
-        AirColor = "#228B22"
-    cursor.execute("SELECT Wert FROM Temp_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+        AirColor = "7CFC00"
+    cursor.execute("SELECT Wert FROM Temp_AlarmState WHERE ID=(SELECT Max(ID) FROM Temp_AlarmState)")
     TempAlarm = (cursor.fetchone())[0]
     if (TempAlarm == 2):          # Displaying Alarmstate of Temperature in words with color
         TempAlarmState = "Alarm"
-        TempColor = "#B22222"
+        TempColor = "B22222"
     elif (TempAlarm == 1):
         TempAlarmState = "Warning"
-        TempColor = "#CD6839"
+        TempColor = "CD6839"
     elif (TempAlarm == 0):
         TempAlarmState = "OK"
-        TempColor = "#228B22"
-    cursor.execute("SELECT Wert FROM Humidity_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+        TempColor = "7CFC00"
+    cursor.execute("SELECT Wert FROM Humidity_AlarmState WHERE ID=(SELECT Max(ID) FROM Humidity_AlarmState)")
     HumidityAlarm = (cursor.fetchone())[0]
     if (HumidityAlarm == 2):      # Displaying Alarmstate of Humidity in words with color
         HumidityAlarmState = "Alarm"
-        HumidityColor = "#B22222"
+        HumidityColor = "B22222"
     elif (HumidityAlarm == 1):
         HumidityAlarmState = "Warning"
-        HumidityColor = "#CD6839"
+        HumidityColor = "CD6839"
     elif (HumidityAlarm == 0):
         HumidityAlarmState = "OK"
-        HumidityColor = "#228B22"
-    cursor.execute("SELECT Wert FROM Noise_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+        HumidityColor = "7CFC00"
+    cursor.execute("SELECT Wert FROM Noise_AlarmState WHERE ID=(SELECT Max(ID) FROM Noise_AlarmState)")
     NoiseAlarm = (cursor.fetchone())[0]
     if (NoiseAlarm == 2):        # Displaying Alarmstate of Noise in words with color
         NoiseAlarmState = "Alarm"
-        NoiseColor = "#B22222"
-    elif (NoiseAlarm == 2):
+        NoiseColor = "B22222"
+    elif (NoiseAlarm == 1):
         NoiseAlarmState = "Warning"
-        NoiseColor = "#CD6839"
-    elif (NoiseAlarm == 2):
+        NoiseColor = "CD6839"
+    elif (NoiseAlarm == 0):
         NoiseAlarmState = "OK"
-        NoiseColor = "#228B22"
-    cursor.execute("SELECT Wert FROM Wind_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_OUT)")
+        NoiseColor = "7CFC00"
+    cursor.execute("SELECT Wert FROM Wind_AlarmState WHERE ID=(SELECT Max(ID) FROM Wind_AlarmState)")
     WindAlarm = (cursor.fetchone())[0]
     if (WindAlarm == 2):         # Displaying Alarmstate of Wind in words with color
         WindAlarmState = "Alarm"
-        WindColor = "#B22222"
-    elif (WindAlarm == 2):
+        WindColor = "B22222"
+    elif (WindAlarm == 1):
         WindAlarmState = "Warning"
-        WindColor = "#CD6839"
-    elif (WindAlarm == 2):
+        WindColor = "CD6839"
+    elif (WindAlarm == 0):
         WindAlarmState = "OK"
-        WindColor = "#228B22"
+        WindColor = "7CFC00"
     # execute the HTML file with the values of the database
     return render_template('Home.html', Modus=Modus, StateWindow=StateWindow, ManOpen=ManOpen, ManClose=ManClose, Manu = Manu, Auto = Auto, OutTemp=OutTemp, InTemp=InTemp, OutHum=OutHum, InHum=InHum, InQual=InQual, OutQual=OutQual, InPres=InPres, OutPres=OutPres, InSound=InSound, OutSound=OutSound, Priority = Priority, AirQualityAlarmState = AirQualityAlarmState, AirColor = AirColor, TempAlarmState = TempAlarmState, TempColor = TempColor, HumidityAlarmState = HumidityAlarmState, HumidityColor = HumidityColor, NoiseAlarmState = NoiseAlarmState, NoiseColor = NoiseColor, WindAlarmState = WindAlarmState, WindColor = WindColor)
 
@@ -207,8 +207,8 @@ def Limits():
 @app.route("/settingsText")
 def LimitsText():
     # getting current values out of the database
-    cursor.execute("SELECT Wert FROM AirPressure_MAX WHERE ID=(SELECT Max(ID) FROM AirPressure_MAX)")
-    MaxPres = (cursor.fetchone())[0]
+    cursor.execute("SELECT Wert FROM Wind_MAX WHERE ID=(SELECT Max(ID) FROM Wind_MAX)")
+    MaxWind = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM AirQuality_MAX WHERE ID=(SELECT Max(ID) FROM AirQuality_MAX)")
     MaxQual = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Humidity_MAX WHERE ID=(SELECT Max(ID) FROM Humidity_MAX)")
@@ -221,7 +221,7 @@ def LimitsText():
     MinTemp = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Volume_MAX WHERE ID=(SELECT Max(ID) FROM Volume_MAX)")
     MaxSound = (cursor.fetchone())[0]
-    cursor.execute("SELECT Wert FROM Priority WHERE ID=(SELECT Max(ID) FROM Volume_MAX)")
+    cursor.execute("SELECT Wert FROM Priority WHERE ID=(SELECT Max(ID) FROM Priority)")
     Prio = (cursor.fetchone())[0]
     if (Prio == 0):          # if the Priority is on Humidity, 'Humidity' should be selected
         prio0 = "seleced"
@@ -244,7 +244,7 @@ def LimitsText():
         prio2 = " "
         prio3 = "seleced"
     # execute the HTML file with the values of the database
-    return render_template('Settings.html', MinTemp = MinTemp, MaxTemp = MaxTemp, MinHum = MinHum, MaxHum = MaxHum, MaxQual = MaxQual, MaxPres = MaxPres, MaxSound =MaxSound, prio0 = prio0, prio1 = prio1, prio2 = prio2, prio3 = prio3)
+    return render_template('Settings.html', MinTemp = MinTemp, MaxTemp = MaxTemp, MinHum = MinHum, MaxHum = MaxHum, MaxQual = MaxQual, MaxWind = MaxWind, MaxSound =MaxSound, prio0 = prio0, prio1 = prio1, prio2 = prio2, prio3 = prio3)
 
 
 # Bottom 'SUBMIT', submitting the new limit values
@@ -256,7 +256,7 @@ def submit():
     MinHum=request.form['MinHum']
     MaxHum=request.form['MaxHum']
     MaxQual=request.form['MaxCO2']
-    MaxPres=request.form['MaxPres']
+    MaxWind=request.form['MaxWind']
     MaxSound=request.form['MaxNoise']
     Prio=request.form['Priority']
     # executing the database INSERT command
@@ -265,7 +265,7 @@ def submit():
     cursor.execute(Ins + "Humidity_MIN" + Val + MinHum +")")
     cursor.execute(Ins + "Humidity_MAX" + Val + MaxHum +")")
     cursor.execute(Ins + "AirQuality_MAX" + Val + MaxQual +")")
-    cursor.execute(Ins + "AirPressure_MAX" + Val + MaxPres +")")
+    cursor.execute(Ins + "Wind_MAX" + Val + MaxWind +")")
     cursor.execute(Ins + "Volume_MAX" + Val + MaxSound +")")
     cursor.execute(Ins + "Priority" + Val + Prio + ")")
     cursor.execute(Ins + "LimitChange" + Val + "1)")
@@ -276,13 +276,13 @@ def submit():
 @app.route("/reset")
 def reset():
     # loading the old values
-    MinTemp="20.0"
-    MaxTemp="26.0"
-    MinHum="30.0"
-    MaxHum="65.0"
-    MaxQual="0.1"
-    MaxPres="1000"
-    MaxSound="60.0"
+    MinTemp="20"
+    MaxTemp="26"
+    MinHum="30"
+    MaxHum="65"
+    MaxQual="1"
+    MaxWind="21"
+    MaxSound="60"
     Prio="3"
     # executing the database INSERT command
     cursor.execute(Ins + "Temp_MIN" + Val + MinTemp +")")
@@ -290,7 +290,7 @@ def reset():
     cursor.execute(Ins + "Humidity_MIN" + Val + MinHum +")")
     cursor.execute(Ins + "Humidity_MAX" + Val + MaxHum +")")
     cursor.execute(Ins + "AirQuality_MAX" + Val + MaxQual +")")
-    cursor.execute(Ins + "AirPressure_MAX" + Val + MaxPres +")")
+    cursor.execute(Ins + "Wind_MAX" + Val + MaxWind +")")
     cursor.execute(Ins + "Volume_MAX" + Val + MaxSound +")")
     cursor.execute(Ins + "Priority" + Val + Prio + ")")
     cursor.execute(Ins + "LimitChange" + Val + "1)")
@@ -300,14 +300,14 @@ def reset():
 
 
 # Starting the website construction for DISCRIPTION
-@app.route("/discription")
-def Discription():
-    return render_template('Discription-Construction.html')
+@app.route("/description")
+def Description():
+    return render_template('Description-Construction.html')
 
 # Discription HTML
-@app.route("/discriptionText")
-def DiscriptionText():
-    return render_template('Discription.html')
+@app.route("/descriptionText")
+def DescriptionText():
+    return render_template('Description.html')
 
 
 # executing this python code as main funciton
