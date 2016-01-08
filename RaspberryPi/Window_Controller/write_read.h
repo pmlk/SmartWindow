@@ -6,7 +6,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
-#include "mysql/headers/mysql.h"
+#include "mysql_xcompile/headers/mysql.h"
 #include "string.h"
 #include "time.h"
 #include "stddef.h"

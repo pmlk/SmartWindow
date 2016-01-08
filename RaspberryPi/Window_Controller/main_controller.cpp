@@ -37,10 +37,9 @@
 #include <ifaddrs.h>
 //
 #include "SmartWindowMacros.h"
-#include "schreiben_lesen.h"
 #include "write_read.h"
 // when Cross-Compiling
-#include "mysql/headers/mysql.h"
+#include "mysql_xcompile/headers/mysql.h"
 // when compiling on RasPi
 //#include <mysql/mysql.h>
 
@@ -60,7 +59,22 @@
 #define TBL_MAN_OPEN					"ManOpen"
 #define TBL_MAN_CLOSE					"ManClose"
 #define TBL_WIN_STATUS					"Win_Open"
+// Table suffixes
+#define TBL_SUF_ALARMSTATE				"AlarmState"
+
+/*
+	write_in_db(mysql,DB_NAME,"Air_Quality_AlarmState",state);
+	write_in_db(mysql,DB_NAME,"Humidity_AlarmState",state);
+	write_in_db(mysql,DB_NAME,"Temp_AlarmState",state);
+	write_in_db(mysql,DB_NAME,"Noise_AlarmState",state);
+*/
+
 #define CONCAT_TABLE(sensor,suffix)		tableName(sensor,suffix)
+
+// statuses
+#define STS_OK			"0"
+#define STS_WARNING 	"1"
+#define STS_ALARM		"2"
 
 //
 // local functions
@@ -76,10 +90,10 @@ int get_Lowpan0Ipv6Address(char* ipv6_strBuf, size_t bufferLen);
 int splitString(char* string, char* delimiter, char ***resultArr);
 char* concat(char *s1, char *s2);
 char* tableName(char* sensor, char* suffix);
-void writeAirQState(int state);
-void writeHumdityState(int state);
-void writeTemperatureState(int state);
-void writeVolumeState(int state);
+void writeAirQState(char* state);
+void writeHumdityState(char* state);
+void writeVolumeState(char* state);
+void writeTemperatureState(char* state);
 
 /**
  * starts threads and
@@ -313,7 +327,7 @@ void *decisionLoop(void* args)
 	
 	// Implementation State Machine
 	bool init = true;
-	bool state0 = false
+	bool state0 = false;
 	bool state11 = false;
 	bool state12 = false;
 	bool state13 = false;
@@ -349,7 +363,7 @@ void *decisionLoop(void* args)
 			writeAirQState("2");
 		} else {
 			// Air Qualitiy OK
-			writeAirQState("0");	
+			writeAirQState("0");
 		}
 
 		// Temperature
@@ -423,7 +437,7 @@ void *decisionLoop(void* args)
 		//
 		// Logical data for internal control
 		//
-		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, succ);
+		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, &read_success);
 		
 		// Implementation of Grenzwerte.png
 		// Air Quality Alarm
@@ -431,7 +445,7 @@ void *decisionLoop(void* args)
 		{
 			airQ_alarm = true;
 		}
-		if ((((airQ_in + airQ_in) / 2) == (airQ_max - 2))
+		if ((((airQ_in + airQ_in) / 2) == (airQ_max - 2)))
 		{
 			airQ_alarm = false; 	
 		}
@@ -634,7 +648,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 4.2
-		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm))) && !state42)
+		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm))) && !state42))
 		{
 			state41 = false;
 			state42 = true;
@@ -648,7 +662,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 4.4
-		if (state43 && (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (!airQ_alarm || !temp_alarm || !humid_alarm))) && !state44)
+		if (state43 && (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (!airQ_alarm || !temp_alarm || !humid_alarm))) && !state44)))
 		{
 			state33 = false;
 			state34 = true;
@@ -932,22 +946,26 @@ char* tableName(char* sensor, char* suffix)
 	return concat(sensor_,suffix);
 }
 
-void writeAirQState(char state)
+void writeAirQState(char* state)
 {
-	write_in_db(mysql,DB_NAME,"Air_Quality_AlarmState",state);
+	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
+	write_in_db(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,TBL_SUF_ALARMSTATE),state);
 }
 
-void writeHumdityState(char state)
+void writeHumdityState(char* state)
 {
-	write_in_db(mysql,DB_NAME,"Humidity_AlarmState",state);
+	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
+	write_in_db(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,TBL_SUF_ALARMSTATE),state);
 }
 
-void writeTemperatureState(char state);
+void writeTemperatureState(char* state)
 {
-	write_in_db(mysql,DB_NAME,"Temp_AlarmState",state);
+	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
+	write_in_db(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,TBL_SUF_ALARMSTATE),state);
 }
 
-void writeVolumeState(char state)
+void writeVolumeState(char* state)
 {
-	write_in_db(mysql,DB_NAME,"Noise_AlarmState",state);
+	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
+	write_in_db(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,TBL_SUF_ALARMSTATE),state);
 }
