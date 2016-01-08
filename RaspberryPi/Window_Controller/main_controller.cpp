@@ -37,10 +37,7 @@
 #include <ifaddrs.h>
 //
 #include "SmartWindowMacros.h"
-<<<<<<< HEAD
-=======
-//#include "schreiben_lesen.h"
->>>>>>> ebaa1a802ac2adfe51c67b1929b97d7f5c3d7675
+#include "schreiben_lesen.h"
 #include "write_read.h"
 // when Cross-Compiling
 #include "mysql/headers/mysql.h"
