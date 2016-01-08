@@ -455,7 +455,7 @@ void *decisionLoop(void* args)
 //			sleep(5);
 //		}
 //
-//	}
+	}
 
 /*
 	while(1)
