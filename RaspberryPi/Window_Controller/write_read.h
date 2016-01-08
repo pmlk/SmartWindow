@@ -17,3 +17,4 @@ void close_session(MYSQL *mysql);
 bool write_in_db(MYSQL *mysql,const char *db, const char *tabelle, const char *value);
 bool get_latest_value_bool(MYSQL *mysql, const char *db, const char *tabelle, bool *succeeded);
 double get_latest_value_double(MYSQL *mysql, const char *db, const char *tabelle, bool *succeeded);
+int get_latest_value_int(MYSQL *mysql, const char *db, const char *table, bool *succeeded);

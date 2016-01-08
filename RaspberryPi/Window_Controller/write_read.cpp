@@ -178,6 +178,81 @@ bool get_latest_value_bool(MYSQL *mysql, const char *db, const char *table, bool
 	return bool(return_val);
 }
 
+int get_latest_value_int(MYSQL *mysql, const char *db, const char *table, bool *succeeded) {	//function gets and returns latest value from the stated table (as bool)
+	MYSQL_ROW  row;
+	MYSQL_RES  *mysql_res;
+	unsigned int i;
+	char *max_id;
+	char *value_max_id;
+	double return_val;
+	unsigned long int lbuf;
+	bool error;
+
+	connect(mysql);												// connect to database
+	check_error(mysql);
+
+	if(mysql_select_db(mysql, db)==0){
+//			printf("db successfully selected\n");
+			}
+	else{
+			*succeeded = false;
+			return 0;
+	}
+
+	char buf[BUF] = "SELECT MAX(id) AS id FROM ";				// search for highest id
+			strcat(buf,	table);
+
+	lbuf = strlen(buf);
+
+	mysql_real_query(mysql, buf , lbuf);
+	mysql_res = mysql_store_result(mysql);
+	error = check_error(mysql);
+
+	if (error == true){
+		*succeeded = false;
+		return 0;
+	}
+
+
+	while ((row = mysql_fetch_row (mysql_res)) != NULL) {			// print found data
+		for (i = 0;  i < mysql_num_fields(mysql_res);  i ++){		// print single coulumns of the row
+//			printf ("highest id is in row %s\n",row[i]);
+			max_id = row[i];
+		}
+	}
+
+
+	char buf2[BUF] = "SELECT Wert FROM ";							// get the value belonging the highest id
+				strcat(buf2, table);								// create string for the query
+				strcat(buf2, " WHERE ID=");
+				strcat(buf2, max_id);
+
+
+	lbuf = strlen(buf2);
+
+	mysql_real_query(mysql, buf2 , lbuf);							// query server to search for the value belonging to the highest id
+	mysql_res = mysql_store_result(mysql);
+	error = check_error(mysql);
+
+	if (error == true){
+			*succeeded = false;
+			return 0;
+		}
+
+
+	while ((row = mysql_fetch_row (mysql_res)) != NULL) {			// print single coulumns of the row
+		for (i = 0;  i < mysql_num_fields(mysql_res);  i ++){
+//			printf ("value in cell: %s \n",row[i]);
+			value_max_id = row[i];
+		}
+	}
+
+	close_session(mysql);
+	return_val = atoi(value_max_id);								// convert the value from sting to double
+	*succeeded = true;
+	return bool(return_val);
+}
+
 
 bool write_in_db(MYSQL *mysql, const char *db, const char *table, const char *value) {			// write data in database
 	
