@@ -37,7 +37,7 @@
 #include <ifaddrs.h>
 //
 #include "SmartWindowMacros.h"
-#include "schreiben_lesen.h"
+#include "write_read.h"
 // when Cross-Compiling
 //#include "mysql/headers/mysql.h"
 // when compiling on RasPi
@@ -75,7 +75,10 @@ int get_Lowpan0Ipv6Address(char* ipv6_strBuf, size_t bufferLen);
 int splitString(char* string, char* delimiter, char ***resultArr);
 char* concat(char *s1, char *s2);
 char* tableName(char* sensor, char* suffix);
-
+void writeAirQState(int state);
+void writeHumdityState(int state);
+void writeTemperatureState(int state);
+void writeVolumeState(int state);
 
 /**
  * starts threads and
@@ -237,7 +240,7 @@ void *receiveLoop(void* args)
 
 						// TODO: evaluate *cmd (PUT/GET)
 						// PUT: write data to DB
-						schreibe_in_db(mysql,DB_NAME,table,messdaten,value);
+						write_in_db(mysql,DB_NAME,table,value);
 						// GET: read from DB (and send value to node requesting data)
 
 						free(table);
@@ -292,66 +295,146 @@ void *decisionLoop(void* args)
 	double airQ_temp, airQ_temp2;
 	double temp_average;
 	double humid_average;
+	int priority;
 	bool airQ_alarm;									// air quality alarm
 	bool temp_alarm;									// temperature alarm
 	bool humid_alarm;									// humidity alarm
-	bool vol_alarm;
+	bool vol_alarm;										// volumen alarm
+	bool wind_alarm;									// wind alarm (actually not imptemented)
+	bool airQ_alarm_changed;
+	bool temp_alarm_changed;
+	bool humid_alarm_changed = false;
+	bool humid_alarm_rising_edge = false;
+	bool humid_alarm_falling_edge = false;
+	bool vol_alarm_changed;
+	bool success;
+	bool *succ = &success;
 
 	// Implementation State Machine
 	bool init = true;
-	bool state1 = false;
-	bool state2 = false;
-	bool state3 = false;
-	bool state4 = false;
-
+	bool state0 = false
+	bool state11 = false;
+	bool state12 = false;
+	bool state13 = false;
+	bool state14 = false;
+	bool state21 = false;
+	bool state22 = false;
+	bool state23 = false;
+	bool state24 = false;
+	bool state31 = false;
+	bool state32 = false;
+	bool state33 = false;
+	bool state34 = false;
+	bool state41 = false;
+	bool state42 = false;
+	bool state43 = false;
+	bool state44 = false;
 
 	// start while(1)
 	// periodically read data from DB
 	while(1) {
 
 		// Auto/Manual
-		autoMode_bo = daten_suchen(mysql,DB_NAME,TBL_AUTO, messdaten);
-		manClose_bo = daten_suchen(mysql,DB_NAME,TBL_MAN_CLOSE, messdaten);
-		manOpen_bo = daten_suchen(mysql,DB_NAME,TBL_MAN_OPEN, messdaten);
+		autoMode_bo = get_latest_value_bool(mysql,DB_NAME,TBL_AUTO, succ);
+		manClose_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_CLOSE, succ);
+		manOpen_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_OPEN, succ);
 		// current status
-		win_open_bo = daten_suchen(mysql,DB_NAME,TBL_WIN_STATUS, messdaten);
+		win_open_bo = get_latest_value_bool(mysql,DB_NAME,TBL_WIN_STATUS, succ);
+		// write current controll status in database
+		// Air Quality
+		if (airQ_alarm)
+		{
+			// Air Quality Alarm
+			writeAirQState("2");
+		} else {
+			// Air Qualitiy OK
+			writeAirQState("0");	
+		}
+
+		// Temperature
+		if (temp_alarm)
+		{
+			// Temperature Alarm
+			writeTemperatureState("2");
+		} else {
+			if ((temp_min < temp_in) && (temp_in < temp_max))
+			{
+				// Temparture OK
+				writeTemperatureState("0");
+			} else {
+				// Temperature Warning
+				writeTemperatureState("1");
+			}
+		}
+		// Humidity Alarm
+		if (humid_alarm && humid_alarm_changed)
+		{
+			// Humidity Alarm
+			writeHumdityState("2");
+			if ((humid_min < humid_in) && (humid_in < humid_max))
+			{
+				// Humidity OK
+				writeHumdityState("0");
+			} else {
+				// Humidity Warning
+				writeHumdityState("1");
+			}
+		}
+		// Noise Alarm
+		if (vol_alarm)
+		{
+			// Noise ALarm
+			writeVolumeState("2");
+		} else {
+			// Noise OK
+			writeVolumeState("0");
+		}
 
 		//
 		// Sensor Data
 		//
 		// Air Pressure
-		airP_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_IN), messdaten);
-		airP_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_OUT), messdaten);
-		airP_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,THR_MAX), messdaten);
+		airP_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_IN), succ);
+		if (succ)
+		{
+			/* code */
+		}
+		airP_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_OUT), succ);
+		airP_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,THR_MAX), succ);
 		// Air Quality
-		airQ_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_IN), messdaten);
-		airQ_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_OUT), messdaten);
-		airQ_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,THR_MAX), messdaten);
+		airQ_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_IN), succ);
+		airQ_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_OUT), succ);
+		airQ_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,THR_MAX), succ;
 		// Humidity
-		humid_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_IN), messdaten);
-		humid_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), messdaten);
-		humid_min = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), messdaten);
-		humid_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), messdaten);
+		humid_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_IN), succ);
+		humid_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), succ);
+		humid_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), succ);
+		humid_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), succ);
 		humid_average = (((humid_max - humid_min) / 2) + humid_min);
 		// Temperature
-		temp_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), messdaten);
-		temp_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), messdaten);
-		temp_min = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), messdaten);
-		temp_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), messdaten);
+		temp_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), succ);
+		temp_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), succ);
+		temp_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), succ);
+		temp_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), succ);
 		temp_average = ((temp_max -temp_min) / 2) + temp_min;
 		// Volume
-		vol_in = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), messdaten);
-		vol_out = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), messdaten);
-		vol_max = daten_suchen(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), messdaten);
+		vol_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), succ);
+		vol_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), succ);
+		vol_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), succ);
 
+		//
+		// Logical data for internal control
+		//
+		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, succ);
+;
 		
 		// Implementation of Grenzwerte.png
 		// Air Quality Alarm
-		if (((airQ_out + airQ_in) / 2) > airQ_max)
+		if (((airQ_in + airQ_in) / 2) > airQ_max)
 		{
 			airQ_alarm = true;
 		}
-		if (((airQ_out + airQ_in) / 2) == (airQ_max - 2))
+		if ((((airQ_in + airQ_in) / 2) == (airQ_max - 2))
 		{
 			airQ_alarm = false; 	
 		}
@@ -377,58 +460,222 @@ void *decisionLoop(void* args)
 		}
 
 		// Volume Alarm
-		if ((vol_in > vol_max) && (vol_in > vol_out))
+		if (vol_out > vol_max)
 		{
 			vol_alarm = true;
 		}
-		if (vol_in < vol_max)
+		// Attention: To-Do!
+		if ((vol_max - 2) == vol_out)
 		{
 			vol_alarm = false;
 		}
 
-		// Initialize
+		// Wind Alarm actually not implemented!
+		wind_alarm = false;
+
+		// Transition 0
 		// At the beginning the Window will always be closed
-		if (init && !win_open_bo && !state1)
+		if (init && !win_open_bo && !state0)
 		{
 			init = false;
-		} else {
-			state1 = true;
+			state0 = true;
+		} 
+
+		// Transition 1.1
+		if (state0 && (priority==0) && !state11)
+		{
+			state0 = false;
+			state11 = true;		
 		}
 
-		// State 1
-		// Windows is closed and waiting on Commands
-		if (state1 && !state2 && ((!autoMode_bo && manOpen_bo) || (manOpen_bo && (airQ_alarm && temp_alarm && humid_alarm))))
+		// Transition 1.2
+		if (state11 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && humid_alarm))) && !state12)
 		{
-			state1 = false;
-		} else {
-			state2 = true;
+			state11 = false;
+			state12 = true;
 		}
 
-		// State 2
-		// Open Window till it is open
-		if (state2 && !state3 && win_open_bo)
+		// Transition 1.3
+		if (state12 && win_open_bo && !state13)
 		{
-			state2 = false;
-		} else {
-			state3 = true;
+			state12 = false;
+			state13 = true;
 		}
 
-		// State 3
-		// Window is opened and waiting on commands
-		if (state3 && !state4 && ((!autoMode_bo && manClose_bo) || (autoMode_bo && (vol_alarm || (!humid_alarm && airQ_alarm && temp_alarm)))))
+		// Transition 1.4
+		if (state13 && (!wind_alarm || (!autoMode_bo && manClose_bo) || (autoMode_bo && (vol_alarm || !humid_alarm))) && !state14)
 		{
-			state3 = false;
-		} else {
-			state4 = true;
+			state13 = false;
+			state14 = true;
 		}
 
-		// State 4
-		// Close Window till it is closed
-		if (state4 && !state1 && !win_open_bo)
+		// Transition 1.5
+		if (state14 && !win_open_bo && !state11)
 		{
-			state4 = false;
-		} else {
-			state1 = true;
+			state14 = false;
+			state11 = true;
+		}
+
+		// Transition 1.6
+		if (state13 && (priority != 0) && !init)
+		{
+			state13 = false;
+			init = true;
+		}
+
+		// Transition 1,7
+		if (state11 && (priority != 0) && !init)
+		{
+			state11 = false;
+			init = true;
+		}
+
+		// Transition 2.1
+		if (state0 && (priority==1) && !state21)
+		{
+			state0 = false;
+			state21 = true;		
+		}
+
+		// Transition 2.2
+		if (state21 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && temp_alarm))) && !state22)
+		{
+			state21 = false;
+			state22 = true;
+		}
+
+		// Transition 2.3
+		if (state22 && win_open_bo && !state23)
+		{
+			state22 = false;
+			state23 = true;
+		}
+
+		// Transition 2.4
+		if (state23 && (!wind_alarm || (!autoMode_bo && manClose_bo) || (autoMode_bo && (vol_alarm || !temp_alarm))) && !state24)
+		{
+			state23 = false;
+			state24 = true;
+		}
+
+		// Transition 2.5
+		if (state24 && !win_open_bo && !state21)
+		{
+			state24 = false;
+			state21 = true;
+		}
+
+		// Transition 2.6
+		if (state23 && (priority != 1) && !init)
+		{
+			state23 = false;
+			init = true;
+		}
+
+		// Transition 2,7
+		if (state21 && (priority != 1) && !init)
+		{
+			state21 = false;
+			init = true;
+		}
+
+		// Transition 3.1
+		if (state0 && (priority==2) && !state31)
+		{
+			state0 = false;
+			state31 = true;		
+		}
+
+		// Transition 3.2
+		if (state31 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && airQ_alarm))) && !state32)
+		{
+			state31 = false;
+			state32 = true;
+		}
+
+		// Transition 3.3
+		if (state32 && win_open_bo && !state33)
+		{
+			state32 = false;
+			state33 = true;
+		}
+
+		// Transition 3.4
+		if (state33 && (!wind_alarm || (!autoMode_bo && manClose_bo) || (autoMode_bo && (vol_alarm || !airQ_alarm))) && !state34)
+		{
+			state33 = false;
+			state34 = true;
+		}
+
+		// Transition 3.5
+		if (state34 && !win_open_bo && !state31)
+		{
+			state34 = false;
+			state31 = true;
+		}
+
+		// Transition 3.6
+		if (state33 && (priority != 2) && !init)
+		{
+			state33 = false;
+			init = true;
+		}
+
+		// Transition 3,7
+		if (state31 && (priority != 2) && !init)
+		{
+			state31 = false;
+			init = true;
+		}
+
+
+		// Transition 4.1
+		if (state0 && (priority==3) && !state41)
+		{
+			state0 = false;
+			state41 = true;		
+		}
+
+		// Transition 4.2
+		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm))) && !state42)
+		{
+			state41 = false;
+			state42 = true;
+		}
+
+		// Transition 4.3
+		if (state42 && win_open_bo && !state43)
+		{
+			state42 = false;
+			state43 = true;
+		}
+
+		// Transition 4.4
+		if (state43 && (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (!airQ_alarm || !temp_alarm || !humid_alarm))) && !state44)
+		{
+			state33 = false;
+			state34 = true;
+		}
+
+		// Transition 4.5
+		if (state44 && !win_open_bo && !state41)
+		{
+			state44 = false;
+			state41 = true;
+		}
+
+		// Transition 4.6
+		if (state43 && (priority != 3) && !init)
+		{
+			state43 = false;
+			init = true;
+		}
+
+		// Transition 3,7
+		if (state41 && (priority != 3) && !init)
+		{
+			state41 = false;
+			init = true;
 		}
 
 		// Assignments
@@ -438,17 +685,68 @@ void *decisionLoop(void* args)
 			sleep(5);
 		}
 
-		if(state2)
+		if(state12)
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Open");
 			sleep(5);
 		}
 
-		if (state4)
+		if (state14)
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Close");
 			sleep(5);
 		}
+
+		if(state22)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Open");
+			sleep(5);
+		}
+
+		if (state24)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Close");
+			sleep(5);
+		}
+
+		if(state32)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Open");
+			sleep(5);
+		}
+
+		if (state34)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Close");
+			sleep(5);
+		}
+
+		if(state42)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Open");
+			sleep(5);
+		}
+
+		if (state44)
+		{
+			sw_send(DST_MULITCAST, "PUT_Win/Close");
+			sleep(5);
+		}
+
+		// Humidity Alarm changed 
+		// (rising edge)
+		if (humid_alarm && humid_alarm_rising_edge)
+		{
+			humid_alarm_changed = true;
+			printf("Humidity Alarm changed \n");
+		}
+		humid_alarm_rising_edge = humid_alarm;
+		// (falling edge)
+		if (!humid_alarm && humid_alarm_falling_edge){
+			humid_alarm_changed = true;
+			printf("Humidity Alarm changed \n");
+		}
+		humid_alarm_falling_edge = humid_alarm;
 		
 	}
 
@@ -635,4 +933,24 @@ char* tableName(char* sensor, char* suffix)
 {
 	char* sensor_ = concat(sensor, SEP_SENSOR);
 	return concat(sensor_,suffix);
+}
+
+void writeAirQState(char state)
+{
+	write_in_db(mysql,DB_NAME,"Air_Quality_AlarmState",state);
+}
+
+void writeHumdityState(char state)
+{
+	write_in_db(mysql,DB_NAME,"Humidity_AlarmState",state);
+}
+
+void writeTemperatureState(char state);
+{
+	write_in_db(mysql,DB_NAME,"Temp_AlarmState",state);
+}
+
+void writeVolumeState(char state)
+{
+	write_in_db(mysql,DB_NAME,"Noise_AlarmState",state);
 }
