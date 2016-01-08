@@ -38,6 +38,8 @@
 //
 #include "SmartWindowMacros.h"
 #include "write_read.h"
+
+
 // when Cross-Compiling
 #include "mysql_xcompile/headers/mysql.h"
 // when compiling on RasPi
@@ -61,13 +63,6 @@
 #define TBL_WIN_STATUS					"Win_Open"
 // Table suffixes
 #define TBL_SUF_ALARMSTATE				"AlarmState"
-
-/*
-	write_in_db(mysql,DB_NAME,"Air_Quality_AlarmState",state);
-	write_in_db(mysql,DB_NAME,"Humidity_AlarmState",state);
-	write_in_db(mysql,DB_NAME,"Temp_AlarmState",state);
-	write_in_db(mysql,DB_NAME,"Noise_AlarmState",state);
-*/
 
 #define CONCAT_TABLE(sensor,suffix)		tableName(sensor,suffix)
 
