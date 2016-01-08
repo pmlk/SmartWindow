@@ -39,7 +39,7 @@ Drop table SmartWindow.LimitChange;
 Drop table SmartWindow.Air_Quality_AlarmState;
 Drop table SmartWindow.Humidity_AlarmState;
 Drop table SmartWindow.Temp_AlarmState;
-Drop table SmartWindow.Noise_AlarmState;
+Drop table SmartWindow.Volume_AlarmState;
 Drop table SmartWindow.Wind_AlarmState;
 Drop table SmartWindow.Priority;
 
@@ -223,8 +223,8 @@ Create table SmartWindow.Wind_MAX(
     Zeitstempel	timestamp unique not null,
     Wert		int default 0);   
       
--- Noise_Alarm (0: OK, 1: Warning, 2:Alarm)
- Create table SmartWindow.Noise_AlarmState(
+-- Volume_Alarm (0: OK, 1: Warning, 2:Alarm)
+ Create table SmartWindow.Volume_AlarmState(
 	ID			INT primary key	Auto_increment,
     Zeitstempel	timestamp unique not null,
     Wert		int default 0);   
@@ -263,7 +263,7 @@ Insert Into SmartWindow.Volume_OUT(Zeitstempel, Wert) Value (current_timestamp()
 Insert Into SmartWindow.Air_Quality_AlarmState(Zeitstempel) Value (current_timestamp());
 Insert Into SmartWindow.Humidity_AlarmState(Zeitstempel) Value (current_timestamp());
 Insert Into SmartWindow.Temp_AlarmState(Zeitstempel) Value (current_timestamp()); 
-Insert Into SmartWindow.Noise_AlarmState(Zeitstempel) Value (current_timestamp()); 
+Insert Into SmartWindow.Volume_AlarmState(Zeitstempel) Value (current_timestamp()); 
 Insert Into SmartWindow.Wind_AlarmState(Zeitstempel, Wert) Value (current_timestamp(), 1);
 Insert Into SmartWindow.Priority(Zeitstempel) Value (current_timestamp());
 

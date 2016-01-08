@@ -129,7 +129,7 @@ def Main():
     elif (HumidityAlarm == 0):
         HumidityAlarmState = "OK"
         HumidityColor = "7CFC00"
-    cursor.execute("SELECT Wert FROM Noise_AlarmState WHERE ID=(SELECT Max(ID) FROM Noise_AlarmState)")
+    cursor.execute("SELECT Wert FROM Volume_AlarmState WHERE ID=(SELECT Max(ID) FROM Volume_AlarmState)")
     NoiseAlarm = (cursor.fetchone())[0]
     if (NoiseAlarm == 2):        # Displaying Alarmstate of Noise in words with color
         NoiseAlarmState = "Alarm"
