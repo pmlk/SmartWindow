@@ -22,8 +22,11 @@
 // parameters
 #define PP_BUF_SIZE         (64)
 #define PP_MSG_QUEUE_SIZE   (8U)
-#define PP_PORT             (6414)
-
+//#ifdef IN
+	#define PP_PORT             (6414)
+//#else
+	//#define PP_PORT 			(6415)
+//#endif
 // smartwindow
 
 #define SW_CHANNEL			26

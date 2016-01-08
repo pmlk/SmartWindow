@@ -1,20 +1,14 @@
-/*
- * Copyright (C) 2014 Freie Universität Berlin
- *
- * This file is subject to the terms and conditions of the GNU Lesser General
- * Public License v2.1. See the file LICENSE in the top level directory for more
- * details.
- */
+
 
 /**
  * @ingroup tests
  * @{
  *
  * @file
- * @brief       Test case for the low-level ADC driver
+ * @brief       smartWindow project 
  *
- * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
- *
+ * @author      Sebastian Kaestner sebastian.kaestner@haw-hamburg.de
+ * @author      Sebastian Heinrich sebastian.heinrich@haw-hamburg.de
  * @}
  */
 
@@ -230,17 +224,20 @@ void *communication_thread(void *arg)
             strcpy(command, pp_buffer);
             if(strcmp(command, GET_ALL) == 0){
                 communicationCommand = START_MEASUREMENT;
+                printf("Befehl: %s\n", pp_buffer);
             }
             #ifdef IN
             else if(strcmp(command, SW_OPEN_WINDOW) == 0){
                 communicationCommand = START_OPEN_WINDOW;
+                printf("Befehl: %s\n", pp_buffer);
             }
             else if(strcmp(command, SW_CLOSE_WINDOW) == 0){
                 communicationCommand = START_CLOSE_WINDOW;
+                printf("Befehl: %s\n", pp_buffer);
             }
             #endif
             
-            printf("Befehl: %s\n", pp_buffer);
+            
             
             msg.content.value = communicationCommand;
             
@@ -301,20 +298,15 @@ void *communication_thread(void *arg)
 
             
         }
-        
         // clear buffer
-        for(int i = 0; i < res; i++)
-        {
-            command[i] = 0;
-            pp_buffer[i] = 0;
-        }
-        
+        memset(command, 0, res);
+        memset(pp_buffer, 0, res);
     }
     return NULL;
 
 }
 
-/*main Thread, kümmert sich um die Initialisierung und steurt den Programmfluß, Sensoren auslesen und Aktoren steuern*/ 
+/*main Thread, kümmert sich um die Initialisierung und steuert den Programmfluß, Sensoren auslesen und Aktoren steuern*/ 
 int main(void)
 {   
     mpl3115a2_t mplDevice; // device for MPL3115 temperature and pressure sensor
@@ -349,23 +341,23 @@ int main(void)
             
             #ifdef IN 
             if(!b_windowIsDriving){
-                mutex_lock(&mtx);
+                //mutex_lock(&mtx);
                 msg_receive(&msg);
                 communicationCommand = msg.content.value;
-                mutex_unlock(&mtx);
+                //mutex_unlock(&mtx);
             }
             #else
-                mutex_lock(&mtx);
+                //mutex_lock(&mtx);
                 msg_receive(&msg);
                 communicationCommand = msg.content.value;
-                mutex_unlock(&mtx);    
+                //mutex_unlock(&mtx);    
             #endif
                
         switch(communicationCommand){
             case START_MEASUREMENT:
-                mutex_lock(&mtx);
+                //mutex_lock(&mtx);
                 data = getMeasuredData(&mplDevice, &hdcDevice);
-                mutex_unlock(&mtx);
+                //mutex_unlock(&mtx);
                 communicationCommand = FINISH_MEASUREMENT; 
 
                 mutex_lock(&mtx);
@@ -383,10 +375,10 @@ int main(void)
                         printf("Fenster offen!\n");
                         communicationCommand = FINISH_OPEN_WINDOW;
 
-                        mutex_lock(&mtx);
+                        //mutex_lock(&mtx);
                         msg.content.value = communicationCommand;
                         msg_send(&msg, communication_thread_id);
-                        mutex_unlock(&mtx);
+                        //mutex_unlock(&mtx);
                         b_windowIsDriving = false;                        
                     }
                 
