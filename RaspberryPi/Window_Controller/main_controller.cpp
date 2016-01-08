@@ -37,11 +37,15 @@
 #include <ifaddrs.h>
 //
 #include "SmartWindowMacros.h"
+<<<<<<< HEAD
+=======
+//#include "schreiben_lesen.h"
+>>>>>>> ebaa1a802ac2adfe51c67b1929b97d7f5c3d7675
 #include "write_read.h"
 // when Cross-Compiling
-//#include "mysql/headers/mysql.h"
+#include "mysql/headers/mysql.h"
 // when compiling on RasPi
-#include <mysql/mysql.h>
+//#include <mysql/mysql.h>
 
 
 // from RIOT:
@@ -185,7 +189,7 @@ void *receiveLoop(void* args)
 	printf("started UDP server, listening on port %i\n", PORT);
 
 	MYSQL  *mysql = mysql_init(NULL);						// initialize mysql handle
-	struct CGI_DATEN *messdaten = new CGI_DATEN();			//
+	//struct CGI_DATEN *messdaten = new CGI_DATEN();			//
 
 	while(status >= 0)
 	{
@@ -279,7 +283,9 @@ void *decisionLoop(void* args)
 {
 /**/
 	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
-	struct CGI_DATEN *messdaten = new CGI_DATEN();
+	//struct CGI_DATEN *messdaten = new CGI_DATEN();
+
+	bool read_success = false;
 
 	// sensor data variables
 	double airP_in, airP_out, airP_max;					// air pressure
@@ -307,9 +313,7 @@ void *decisionLoop(void* args)
 	bool humid_alarm_rising_edge = false;
 	bool humid_alarm_falling_edge = false;
 	bool vol_alarm_changed;
-	bool success;
-	bool *succ = &success;
-
+	
 	// Implementation State Machine
 	bool init = true;
 	bool state0 = false
@@ -335,11 +339,11 @@ void *decisionLoop(void* args)
 	while(1) {
 
 		// Auto/Manual
-		autoMode_bo = get_latest_value_bool(mysql,DB_NAME,TBL_AUTO, succ);
-		manClose_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_CLOSE, succ);
-		manOpen_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_OPEN, succ);
+		autoMode_bo = get_latest_value_bool(mysql,DB_NAME,TBL_AUTO, &read_success);
+		manClose_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_CLOSE, &read_success);
+		manOpen_bo = get_latest_value_bool(mysql,DB_NAME,TBL_MAN_OPEN, &read_success);
 		// current status
-		win_open_bo = get_latest_value_bool(mysql,DB_NAME,TBL_WIN_STATUS, succ);
+		win_open_bo = get_latest_value_bool(mysql,DB_NAME,TBL_WIN_STATUS, &read_success);
 		// write current controll status in database
 		// Air Quality
 		if (airQ_alarm)
@@ -390,43 +394,39 @@ void *decisionLoop(void* args)
 			writeVolumeState("0");
 		}
 
+
 		//
 		// Sensor Data
 		//
 		// Air Pressure
-		airP_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_IN), succ);
-		if (succ)
-		{
-			/* code */
-		}
-		airP_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_OUT), succ);
-		airP_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,THR_MAX), succ);
+		airP_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_IN), &read_success);
+		airP_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_OUT), &read_success);
+		airP_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,THR_MAX), &read_success);
 		// Air Quality
-		airQ_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_IN), succ);
-		airQ_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_OUT), succ);
-		airQ_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,THR_MAX), succ;
+		airQ_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_IN), &read_success);
+		airQ_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_OUT), &read_success);
+		airQ_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,THR_MAX), &read_success);
 		// Humidity
-		humid_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_IN), succ);
-		humid_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), succ);
-		humid_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), succ);
-		humid_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), succ);
+		humid_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_IN), &read_success);
+		humid_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), &read_success);
+		humid_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), &read_success);
+		humid_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), &read_success);
 		humid_average = (((humid_max - humid_min) / 2) + humid_min);
 		// Temperature
-		temp_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), succ);
-		temp_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), succ);
-		temp_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), succ);
-		temp_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), succ);
+		temp_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), &read_success);
+		temp_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), &read_success);
+		temp_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), &read_success);
+		temp_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), &read_success);
 		temp_average = ((temp_max -temp_min) / 2) + temp_min;
 		// Volume
-		vol_in = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), succ);
-		vol_out = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), succ);
-		vol_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), succ);
+		vol_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), &read_success);
+		vol_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), &read_success);
+		vol_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), &read_success);
 
 		//
 		// Logical data for internal control
 		//
 		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, succ);
-;
 		
 		// Implementation of Grenzwerte.png
 		// Air Quality Alarm
@@ -747,7 +747,7 @@ void *decisionLoop(void* args)
 			printf("Humidity Alarm changed \n");
 		}
 		humid_alarm_falling_edge = humid_alarm;
-		
+
 	}
 
 /*

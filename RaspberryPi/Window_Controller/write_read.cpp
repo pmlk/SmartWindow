@@ -314,7 +314,7 @@ void connect(MYSQL *mysql){											// connect to server
            mysql,   /* pointer to MYSQL-handler */
            "127.0.0.1", /* host-name */
            "root", /* user-Name */
-		   "riot", /* password for user-name */
+		   "1234", /* password for user-name */
 		   "SmartWindow",  /* name of database */
            3306,     /* port (default=0) */
 		   "/var/run/mysqld/mysqld.sock",  /* socket (default=NULL) */

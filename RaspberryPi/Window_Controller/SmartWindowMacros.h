@@ -24,6 +24,7 @@
 #define SENS_AIR_QUALITY	"AirQuality"
 #define SENS_VOLUME			"Volume"
 #define SENS_HUMIDITY		"Humidity"
+#define PRIORITY			"Priority"
 
 // Actuator Names
 #define ACT_WINDOW			"Win"
