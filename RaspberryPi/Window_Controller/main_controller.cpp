@@ -12,6 +12,9 @@
  * </ul>
  *
  */
+/*
+ * Authors: pmlk, shein318
+ */
 
 // standard
 #include <inttypes.h>
@@ -39,17 +42,20 @@
 #include "SmartWindowMacros.h"
 #include "write_read.h"
 
-
+#ifdef XCOMPILE		// defined in IDE (eclipse)
 // when Cross-Compiling
-#include "mysql_xcompile/headers/mysql.h"
-// when compiling on RasPi
-//#include <mysql/mysql.h>
-
+#include "xcompile/headers/mysql.h"
+#else
+// when compiling locally on RasPi
+#include <mysql/mysql.h>
+#endif
 
 // from RIOT:
 // http://riot-os.org/api/group__net__ipv6__addr.html#ga2713917d7f8462406ab96eb14f1bfa2c
 #define IPV6_ADDR_MAX_STR_LEN   (sizeof("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"))
 #define MAXBUF					(2048)
+
+#define UPDATE_RATE				5
 
 // MYSQL
 #define DB_NAME					"SmartWindow"
@@ -97,6 +103,7 @@ void writeTemperatureState(char* state);
  */
 int main(int argc, char **argv)
 {
+
 	// declare and start threads
 	pthread_t rcvThread, decisionThread;//, dummyDataThread;//readThread;
 	pthread_create(&rcvThread, NULL, &receiveLoop, (void*)NULL);		//
@@ -113,7 +120,7 @@ int main(int argc, char **argv)
 	{
 		// request data
 		sw_send(DST_MULITCAST, GET_ALL);
-		sleep(5);
+		sleep(UPDATE_RATE);
 	}
 
 	return 0;

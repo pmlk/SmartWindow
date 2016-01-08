@@ -6,10 +6,17 @@
 
 #include "stdio.h"
 #include "stdlib.h"
-#include "mysql_xcompile/headers/mysql.h"
 #include "string.h"
 #include "time.h"
 #include "stddef.h"
+
+#ifdef XCOMPILE
+// when Cross-Compiling
+#include "xcompile/headers/mysql.h"
+#else
+// when compiling locally on RasPi
+#include <mysql/mysql.h>
+#endif
 
 bool check_error(MYSQL *mysql);
 void connect(MYSQL *mysql);
