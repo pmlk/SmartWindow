@@ -703,55 +703,13 @@ void *decisionLoop(void* args)
 		}
 
 		// Assignments
-		if (init)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state12)
+		if(state12 || state22 || state32 || state42)
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Open");
 			sleep(5);
 		}
 
-		if (state14)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state22)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state24)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state32)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state34)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state42)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state44)
+		if (init || state14 || state24 || state34 || state44)
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Close");
 			sleep(5);
