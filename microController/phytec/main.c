@@ -42,7 +42,7 @@
 
 
 
-#define IN
+//#define IN
 
 #ifdef IN
 
@@ -236,6 +236,9 @@ void *communication_thread(void *arg)
                 printf("Befehl: %s\n", pp_buffer);
             }
             #endif
+            else {
+                printf("Befehl: %s\n", pp_buffer);    
+            }
             
             
             
@@ -259,6 +262,11 @@ void *communication_thread(void *arg)
                 break;
                 #endif
                 case FINISH_MEASUREMENT:
+
+                    #ifndef IN
+                    xtimer_usleep(10*WAIT);
+                    #endif
+
                     //temperature 
                     sprintf(valueString, "%f", (float)(data.temperature) / 10);
                     sendString(sendBuffer, SENS_TEMP, valueString);
@@ -299,8 +307,8 @@ void *communication_thread(void *arg)
             
         }
         // clear buffer
-        memset(command, 0, res);
-        memset(pp_buffer, 0, res);
+        memset(command, 0, PP_BUF_SIZE);
+        memset(pp_buffer, 0, PP_BUF_SIZE);
     }
     return NULL;
 
@@ -330,7 +338,7 @@ int main(void)
 
     communication_thread_id = thread_create(
             t2_stack, sizeof(t2_stack),
-            THREAD_PRIORITY_MAIN , /*CREATE_WOUT_YIELD |*/ CREATE_STACKTEST,
+            THREAD_PRIORITY_MAIN , /*CREATE_WOUT_YIELD |*/ THREAD_CREATE_STACKTEST,
             communication_thread, NULL, "communication_thread");
     communication_thread_id = communication_thread_id + 1 - 1;
     if (!initAll(&mplDevice, &hdcDevice)) {
@@ -354,6 +362,7 @@ int main(void)
             #endif
                
         switch(communicationCommand){
+            printf("%d\n", communicationCommand);
             case START_MEASUREMENT:
                 //mutex_lock(&mtx);
                 data = getMeasuredData(&mplDevice, &hdcDevice);
@@ -384,7 +393,14 @@ int main(void)
                 
                 }
                 else{
-                  
+                    printf("Fenster offen!\n");
+                    communicationCommand = FINISH_OPEN_WINDOW;
+
+                    //mutex_lock(&mtx);
+                    msg.content.value = communicationCommand;
+                    msg_send(&msg, communication_thread_id);
+                    //mutex_unlock(&mtx);
+                    b_windowIsDriving = false;
                 }
        
             break;
@@ -407,11 +423,19 @@ int main(void)
                     }
                 }
                 else{
+                    printf("Fenster geschlossen!\n");
+                    communicationCommand = FINISH_CLOSE_WINDOW;
+
+                    mutex_lock(&mtx);
+                    msg.content.value = communicationCommand;
+                    msg_send(&msg, communication_thread_id);
+                    mutex_unlock(&mtx);
+                    b_windowIsDriving = false;
                 }
             break;
             #endif
         }           
-        
+
         xtimer_usleep(WAIT);
     }
 
