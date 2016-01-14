@@ -7,7 +7,7 @@ int main()
 	printf("Hello World!");
 	printf("Patrick");
 
-
-	printf("Simon")
+	printf("RIOT");
+	printf("Simon");
 	return NULL;
 }
