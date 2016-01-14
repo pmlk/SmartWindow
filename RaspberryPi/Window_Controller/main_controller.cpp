@@ -27,7 +27,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <net/if.h>
-
 // threading
 #include <pthread.h>
 
@@ -38,7 +37,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <ifaddrs.h>
-//
+
 #include "SmartWindowMacros.h"
 #include "write_read.h"
 
@@ -55,12 +54,12 @@
 #define IPV6_ADDR_MAX_STR_LEN   (sizeof("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"))
 #define MAXBUF					(2048)
 
-#define UPDATE_RATE				5
+// polling interval to ask sensor nodes for data
+// update rate in seconds
+#define UPDATE_RATE				10
 
 // MYSQL
 #define DB_NAME					"SmartWindow"
-#define THR_MIN					"MIN"
-#define	THR_MAX					"MAX"
 
 // Table Names
 #define TBL_AUTO						"AutoModus"
@@ -69,7 +68,12 @@
 #define TBL_WIN_STATUS					"Win_Open"
 // Table suffixes
 #define TBL_SUF_ALARMSTATE				"AlarmState"
+// threshold table name suffixes
+#define THR_MIN					"MIN"
+#define	THR_MAX					"MAX"
 
+// create table name with sensor name and suffix
+// i.e.: TEMP_IN
 #define CONCAT_TABLE(sensor,suffix)		tableName(sensor,suffix)
 
 // statuses
@@ -78,13 +82,13 @@
 #define STS_ALARM		"2"
 
 //
-// local functions
+// local function declarations
 //
 // thread functions (loops)
 void *receiveLoop(void* args);
 void *decisionLoop(void* args);
 void *dummyLoop(void* args);
-
+// helper functions
 int sw_send(char *dst_addr, char *data);
 int get_link_local_addr(char* if_name, int if_name_length, struct sockaddr_in6 *ip);
 int get_Lowpan0Ipv6Address(char* ipv6_strBuf, size_t bufferLen);
@@ -105,15 +109,11 @@ int main(int argc, char **argv)
 {
 
 	// declare and start threads
-	pthread_t rcvThread, decisionThread;//, dummyDataThread;//readThread;
-	pthread_create(&rcvThread, NULL, &receiveLoop, (void*)NULL);		//
+	pthread_t rcvThread, decisionThread;//, dummyDataThread;
+	pthread_create(&rcvThread, NULL, &receiveLoop, (void*)NULL);
 	pthread_create(&decisionThread, NULL, &decisionLoop, (void*)NULL);
-	//pthread_create(&readThread, NULL, &readLoop, (void*)NULL);
-	//pthread_create(&dummyDataThread, NULL, &dummyLoop, (void*)NULL);
 
 	sleep(1);
-	// detect nodes
-	//sw_send("ff02::1", SW_PING);
 
 	// requesting sensor data periodically
 	while(1)
@@ -187,9 +187,6 @@ void *receiveLoop(void* args)
 	sin6.sin6_family = AF_INET6;	// set address family, use ipv6
 	sin6.sin6_addr = in6addr_any;	// receive on any address
 
-	// clear buffer memory
-	memset(buffer,0, MAXBUF);
-
 	// bind socket
 	status = bind(sock, (struct sockaddr *)&sin6, sin6len);
 	if(-1 == status)
@@ -209,6 +206,9 @@ void *receiveLoop(void* args)
 		struct sockaddr_in6 src;
 		socklen_t src_len = sizeof(struct sockaddr_in6);
 
+		// clear buffer memory
+		memset(buffer,0, MAXBUF);
+
 		// blocking receive, waiting for data
 		if ((status = recvfrom(sock, buffer, sizeof(buffer), 0,
 				(struct sockaddr *)&src, &src_len)) < 0) {
@@ -227,8 +227,8 @@ void *receiveLoop(void* args)
 			// print raw message from sender
 			printf("rcvd\t\"%s\"\tfrom\t%s\t(%i Bytes)\n", buffer, src_addr_str, status);
 
-			//if(1)
-			// ignore messages from self, comment out (use if(1)) when using dummy loop!
+			//if(true)
+			// ignore messages from self, comment out (use if(true)) when using dummy loop!
 			if(strcmp(srv_addr_str, src_addr_str) != 0)
 			{
 				// array will contain: [CMD_SENSOR_POSITION][VALUE], i.e. [PUT_TEMP_IN][22.12]
@@ -271,13 +271,9 @@ void *receiveLoop(void* args)
 				// received own message
 			}
 		}
-
-		// clear buffer
-		for(int i = 0; i < status; i++)
-		{
-			buffer[i] = 0;
-		}
 	}	// while loop
+
+	printf("SOCKET shutting down\n");
 
 	shutdown(sock, 2);
 	close(sock);
@@ -294,9 +290,7 @@ void *receiveLoop(void* args)
  */
 void *decisionLoop(void* args)
 {
-/**/
 	MYSQL  *mysql = mysql_init(NULL);					// initializing handle
-	//struct CGI_DATEN *messdaten = new CGI_DATEN();
 
 	bool read_success = false;
 
@@ -732,24 +726,13 @@ void *decisionLoop(void* args)
 
 	}
 
-/*
-	while(1)
-	{
-		sw_send(DST_MULITCAST, "PUT_Win/Open");
-		sleep(5);
-
-		sw_send(DST_MULITCAST, "PUT_Win/Close");
-		sleep(5);
-	}
-*/
-
  return NULL;
 }
 
 
 /**
  * writes ip address of an interface to \p ip<br/>
- * see (with GOTO!!):<br/>
+ * adapted from (with GOTO!!):<br/>
  * http://valileo-valilei.blogspot.de/2010/09/getting-link-local-addres-from.html
  * @param if_name name of interface
  * @param if_name_length length of interface name
@@ -764,8 +747,6 @@ int get_link_local_addr(char* if_name, int if_name_length, struct sockaddr_in6* 
 	if (getifaddrs(&ifaddr) == -1) {
 		perror("getifaddrs");
 		ret = -1;
-		//WTF:
-		//goto end;
 		freeifaddrs(ifaddr);
 		return ret;
 	}
@@ -778,14 +759,8 @@ int get_link_local_addr(char* if_name, int if_name_length, struct sockaddr_in6* 
 		struct sockaddr_in6 *current_addr = (struct sockaddr_in6 *) ifa->ifa_addr;
 		memcpy(ip, current_addr, sizeof(*current_addr));
 		ret = 0;
-		//ifa = NULL;
 		break;
-
-		//WTF:
-		//goto end;
 	}
-	//WTF:
-	//end:
 	freeifaddrs(ifaddr);
 	return ret;
 }
