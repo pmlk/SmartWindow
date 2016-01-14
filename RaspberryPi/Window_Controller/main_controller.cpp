@@ -444,7 +444,7 @@ void *decisionLoop(void* args)
 			// Noise OK
 			writeVolumeState("0");
 		}
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 		//
 		// Sensor Data
@@ -478,9 +478,9 @@ void *decisionLoop(void* args)
 		// Logical data for internal control
 		//
 		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, &read_success);
-=======
+//=======
 		
->>>>>>> origin/master
+//>>>>>>> origin/master
 		
 		// Implementation of Grenzwerte.png
 		// Air Quality Alarm
@@ -733,7 +733,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Assignments
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		if (init)
 		{
 			sw_send(DST_MULITCAST, PUT_WIN_CLOSE);
@@ -776,10 +776,10 @@ void *decisionLoop(void* args)
 			sleep(5);
 		}
 
-		if(state42)
-=======
+//		if(state42)
+//=======
 		if(state12 || state22 || state32 || state42)
->>>>>>> origin/master
+//>>>>>>> origin/master
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Open");
 			sleep(5);
