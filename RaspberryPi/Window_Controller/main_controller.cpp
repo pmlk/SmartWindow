@@ -450,44 +450,7 @@ void *decisionLoop(void* args)
 			// Noise OK
 			writeVolumeState("0");
 		}
-//<<<<<<< HEAD
-
-
-		//
-		// Sensor Data
-		//
-		// Air Pressure
-		airP_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_IN), &read_success);
-		airP_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,POS_OUT), &read_success);
-		airP_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_PRESSURE,THR_MAX), &read_success);
-		// Air Quality
-		airQ_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_IN), &read_success);
-		airQ_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,POS_OUT), &read_success);
-		airQ_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_AIR_QUALITY,THR_MAX), &read_success);
-		// Humidity
-		humid_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_IN), &read_success);
-		humid_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,POS_OUT), &read_success);
-		humid_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MIN), &read_success);
-		humid_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_HUMIDITY,THR_MAX), &read_success);
-		humid_average = (((humid_max - humid_min) / 2) + humid_min);
-		// Temperature
-		temp_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_IN), &read_success);
-		temp_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,POS_OUT), &read_success);
-		temp_min = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MIN), &read_success);
-		temp_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_TEMP,THR_MAX), &read_success);
-		temp_average = ((temp_max -temp_min) / 2) + temp_min;
-		// Volume
-		vol_in = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_IN), &read_success);
-		vol_out = get_latest_value_double(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,POS_OUT), &read_success);
-		vol_max = get_latest_value_int(mysql,DB_NAME,CONCAT_TABLE(SENS_VOLUME,THR_MAX), &read_success);
-
-		//
-		// Logical data for internal control
-		//
-		priority = get_latest_value_int(mysql,DB_NAME, PRIORITY, &read_success);
-//=======
 		
-//>>>>>>> origin/master
 		
 		// Implementation of Grenzwerte.png
 		// Air Quality Alarm
@@ -599,7 +562,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 2.2
-		if (state21 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && temp_alarm && !vol_alarm)))) && !state22)
+		if (state21 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && temp_alarm && !vol_alarm))) && !state22)
 		{
 			state21 = false;
 			state22 = true;
@@ -648,7 +611,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 3.2
-		if (state31 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && airQ_alarm && !vol_alarm)))) && !state32)
+		if (state31 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && airQ_alarm && !vol_alarm))) && !state32)
 		{
 			state31 = false;
 			state32 = true;
@@ -698,7 +661,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 4.2
-		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm) && !vol_alarm))) && !state42))
+		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm) && !vol_alarm))) && !state42)
 		{
 			state41 = false;
 			state42 = true;
@@ -740,53 +703,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Assignments
-//<<<<<<< HEAD
-		if (init)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state12)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state14)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state22)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state24)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-		if(state32)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Open");
-			sleep(5);
-		}
-
-		if (state34)
-		{
-			sw_send(DST_MULITCAST, "PUT_Win/Close");
-			sleep(5);
-		}
-
-//		if(state42)
-//=======
 		if(state12 || state22 || state32 || state42)
-//>>>>>>> origin/master
 		{
 			sw_send(DST_MULITCAST, "PUT_Win/Open");
 			sleep(5);
