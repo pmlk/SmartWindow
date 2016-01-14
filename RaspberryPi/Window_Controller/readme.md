@@ -5,10 +5,8 @@ code for your raspberry pi:
 	$ sudo apt-get install libmysqlclient-dev  
 
 
-write_read.cpp:
-- contains functions to write into the MySQL database and read from it
+write_read.cpp - contains functions to write into the MySQL database and read from it
 
-main_controller: 
-- manages the whole process: requests data of all sensors, writes it into the database, decides when to close and open the window and sends the command to the phytec board 
+main_controller - manages the whole process: requests data of all sensors, writes it into the database, decides when to close and open the window and sends the command to the phytec board 
 
 (edited by Simon Stallbaum)
