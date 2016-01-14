@@ -513,7 +513,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 1.2
-		if (state11 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && humid_alarm))) && !state12)
+		if (state11 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && humid_alarm && !vol_alarm))) && !state12)
 		{
 			state11 = false;
 			state12 = true;
@@ -562,7 +562,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 2.2
-		if (state21 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && temp_alarm))) && !state22)
+		if (state21 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && temp_alarm && !vol_alarm)))) && !state22)
 		{
 			state21 = false;
 			state22 = true;
@@ -611,7 +611,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 3.2
-		if (state31 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && airQ_alarm))) && !state32)
+		if (state31 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && airQ_alarm && !vol_alarm)))) && !state32)
 		{
 			state31 = false;
 			state32 = true;
@@ -645,7 +645,7 @@ void *decisionLoop(void* args)
 			init = true;
 		}
 
-		// Transition 3,7
+		// Transition 3.7
 		if (state31 && (priority != 2) && !init)
 		{
 			state31 = false;
@@ -661,7 +661,7 @@ void *decisionLoop(void* args)
 		}
 
 		// Transition 4.2
-		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm))) && !state42))
+		if (state41 && (!wind_alarm && ((!autoMode_bo && manOpen_bo) || (autoMode_bo && (airQ_alarm || temp_alarm || humid_alarm) && !vol_alarm))) && !state42))
 		{
 			state41 = false;
 			state42 = true;
