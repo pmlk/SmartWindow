@@ -56,7 +56,7 @@ def Main():
     OutQual = (cursor.fetchone())[0]
     cursor.execute("SELECT Wert FROM Win_Open WHERE ID=(SELECT Max(ID) FROM Win_Open)")
     if (cursor.fetchone())[0]:   # if the window is opend, show 'opend' and disable the button 'Open'
-        StateWindow = "opend"
+        StateWindow = "opened"
         ManOpen = "disabled"
         ManClose = " "
     else:                        # else show 'closed' and disable the button 'Close'
@@ -224,25 +224,25 @@ def LimitsText():
     cursor.execute("SELECT Wert FROM Priority WHERE ID=(SELECT Max(ID) FROM Priority)")
     Prio = (cursor.fetchone())[0]
     if (Prio == 0):          # if the Priority is on Humidity, 'Humidity' should be selected
-        prio0 = "seleced"
+        prio0 = "selected"
         prio1 = " "
         prio2 = " "
         prio3 = " "
     elif (Prio == 1):        # if the Priority is on Temperature, 'Temperature' should be selected
         prio0 = " "
-        prio1 = "seleced"
+        prio1 = "selected"
         prio2 = " "
         prio3 = " "
     elif (Prio == 2):        # if the Priority is on Air Quality, 'Air Quality' should be selected
         prio0 = " "
         prio1 = " "
-        prio2 = "seleced"
+        prio2 = "selected"
         prio3 = " "
     elif (Prio == 3):        # if the Priority is on all three, 'All three' should be selected
         prio0 = " "
         prio1 = " "
         prio2 = " "
-        prio3 = "seleced"
+        prio3 = "selected"
     # execute the HTML file with the values of the database
     return render_template('Settings.html', MinTemp = MinTemp, MaxTemp = MaxTemp, MinHum = MinHum, MaxHum = MaxHum, MaxQual = MaxQual, MaxWind = MaxWind, MaxSound =MaxSound, prio0 = prio0, prio1 = prio1, prio2 = prio2, prio3 = prio3)
 
