@@ -312,4 +312,4 @@ def DescriptionText():
 
 # executing this python code as main funciton
 if __name__ == "__main__":
-    app.run(host='169.254.160.79', port=80)
+    app.run(host='0.0.0.0', port=80)

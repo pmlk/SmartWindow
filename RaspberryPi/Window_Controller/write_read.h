@@ -18,10 +18,10 @@
 #include <mysql/mysql.h>
 #endif
 
-bool check_error(MYSQL *mysql);
-void connect(MYSQL *mysql);
-void close_session(MYSQL *mysql);
-bool write_in_db(MYSQL *mysql,const char *db, const char *tabelle, const char *value);
-bool get_latest_value_bool(MYSQL *mysql, const char *db, const char *tabelle, bool *succeeded);
-double get_latest_value_double(MYSQL *mysql, const char *db, const char *tabelle, bool *succeeded);
-int get_latest_value_int(MYSQL *mysql, const char *db, const char *table, bool *succeeded);
+bool check_error(MYSQL *mysql);		// check for errors
+void connect(MYSQL *mysql);		// connect to server
+void close_session(MYSQL *mysql);	// close connection to server
+bool write_in_db(MYSQL *mysql,const char *db, const char *table, const char *value);	// write data in database
+bool get_latest_value_bool(MYSQL *mysql, const char *db, const char *table, bool *succeeded);	//function gets and returns latest value from the stated table (as bool)
+double get_latest_value_double(MYSQL *mysql, const char *db, const char *table, bool *succeeded);	//function gets and returns latest value from the stated table (as double)
+int get_latest_value_int(MYSQL *mysql, const char *db, const char *table, bool *succeeded);		//function gets and returns latest value from the stated table (as int)
