@@ -46,7 +46,8 @@
 
 // Commands
 #define GET_CMD(sensor,position)		CMD_GET SEP_SENSOR sensor SEP_SENSOR position
-#define PUT_CMD(sensor,position,value)	concat(concat(concat(CMD_PUT, SEP_SENSOR),tableName(sensor,position)), concat(SEP_VALUE, value))
+//#define PUT_CMD(sensor,position,value)	concat(concat(concat(CMD_PUT, SEP_SENSOR),tableName(sensor,position)), concat(SEP_VALUE, value))
+//#define PUT_CMD(sensor,position,value)	CMD_PUT SEP_SENSOR sensor SEP_SENSOR position SEP_VALUE value
 #define PUT_WIN_OPEN					CMD_PUT SEP_SENSOR ACT_WINDOW SEP_VALUE OPEN
 #define PUT_WIN_CLOSE					CMD_PUT SEP_SENSOR ACT_WINDOW SEP_VALUE CLOSE
 #define GET_ALL							CMD_GET SEP_SENSOR SENS_ALL
