@@ -1,5 +1,4 @@
-<!--
-Structure Model
+/*Structure Model
 
 created: 09.10.2015
 Autor: Mailina Lohmann
@@ -10,10 +9,10 @@ Content: Structure mode for all html datas
 
 Rev: 0.0 - 09.10.2015 first creation
      1.0 - 18.12.2015 comment adjustment
--->
+*/
 
 
-   <!-- used for text form -->
+  /* used for text form */
 h1 {
    font-family:'Alegreya', serif;
    font-size: 3.4em;
@@ -72,8 +71,7 @@ a:active {
    font-size: 14pt;
    }
 
-
-   <!-- used for page structure -->
+  /* used for page structure  */
 #left {
    position: absolute;
    padding: 1;
