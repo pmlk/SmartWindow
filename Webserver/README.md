@@ -1,6 +1,6 @@
 # Webserver
 
-### Datenbank_Tabellen.sql
+### database_tabels.sql
 
 * All required tabels are created by running this script inside the MySQL database.
 * The drop commands as well as a first inizialisation are also inside this script.
