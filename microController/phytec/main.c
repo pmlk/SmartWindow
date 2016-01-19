@@ -37,12 +37,11 @@
 #include "hdc1000.h"
 
 #include "thread.h"
-#include "mutex.h"
 #include "sendReceive.h"
 
 
 
-//#define IN
+#define IN
 
 #ifdef IN
 
@@ -138,9 +137,6 @@ enum eCommunicationCommand{
     #endif
 };
 
-mutex_t mtx = MUTEX_INIT;
-
-volatile int storage = 1;
 kernel_pid_t main_id = KERNEL_PID_UNDEF;
 struct measuredData_t data;
 
@@ -319,13 +315,7 @@ int main(void)
 {   
     mpl3115a2_t mplDevice; // device for MPL3115 temperature and pressure sensor
     hdc1000_t hdcDevice; // device for HDC1000 humidity sensor
-    /* unused Variables 
-    uint32_t pressure;
-    int16_t temp;
-    uint8_t status;
     
-    int hum;
-    */
     msg_t msg;
     #ifdef IN
     int pos = (STEP_LOWER_BOUND + STEP_UPPER_BOUND) / 2;
@@ -349,30 +339,22 @@ int main(void)
             
             #ifdef IN 
             if(!b_windowIsDriving){
-                //mutex_lock(&mtx);
                 msg_receive(&msg);
                 communicationCommand = msg.content.value;
-                //mutex_unlock(&mtx);
             }
             #else
-                //mutex_lock(&mtx);
                 msg_receive(&msg);
-                communicationCommand = msg.content.value;
-                //mutex_unlock(&mtx);    
+                communicationCommand = msg.content.value;    
             #endif
                
         switch(communicationCommand){
             printf("%d\n", communicationCommand);
             case START_MEASUREMENT:
-                //mutex_lock(&mtx);
                 data = getMeasuredData(&mplDevice, &hdcDevice);
-                //mutex_unlock(&mtx);
                 communicationCommand = FINISH_MEASUREMENT; 
 
-                mutex_lock(&mtx);
                 msg.content.value = communicationCommand;
-                msg_send(&msg, communication_thread_id);
-                mutex_unlock(&mtx);   
+                msg_send(&msg, communication_thread_id);                 
             break;
             #ifdef IN
             case START_OPEN_WINDOW:
@@ -384,10 +366,8 @@ int main(void)
                         printf("Fenster offen!\n");
                         communicationCommand = FINISH_OPEN_WINDOW;
 
-                        //mutex_lock(&mtx);
                         msg.content.value = communicationCommand;
                         msg_send(&msg, communication_thread_id);
-                        //mutex_unlock(&mtx);
                         b_windowIsDriving = false;                        
                     }
                 
@@ -396,10 +376,8 @@ int main(void)
                     printf("Fenster offen!\n");
                     communicationCommand = FINISH_OPEN_WINDOW;
 
-                    //mutex_lock(&mtx);
                     msg.content.value = communicationCommand;
                     msg_send(&msg, communication_thread_id);
-                    //mutex_unlock(&mtx);
                     b_windowIsDriving = false;
                 }
        
@@ -413,23 +391,17 @@ int main(void)
                         printf("Fenster geschlossen!\n");
                         communicationCommand = FINISH_CLOSE_WINDOW;
 
-                        mutex_lock(&mtx);
                         msg.content.value = communicationCommand;
                         msg_send(&msg, communication_thread_id);
-                        mutex_unlock(&mtx);
                         b_windowIsDriving = false;
-                    
-
                     }
                 }
                 else{
                     printf("Fenster geschlossen!\n");
                     communicationCommand = FINISH_CLOSE_WINDOW;
 
-                    mutex_lock(&mtx);
                     msg.content.value = communicationCommand;
                     msg_send(&msg, communication_thread_id);
-                    mutex_unlock(&mtx);
                     b_windowIsDriving = false;
                 }
             break;
